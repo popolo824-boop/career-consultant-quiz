@@ -47,7 +47,13 @@ else
   echo "  ~/.claude/CLAUDE.md にプロトコルを追記"
 fi
 
-# 3. SessionStart フックをユーザーレベル settings.json にマージ(python3 が必要)
+# 3. 自動再開ウォッチドッグをユーザーレベル bin にコピー
+mkdir -p "$CLAUDE_HOME/bin"
+cp "$REPO_DIR/scripts/claude-auto-resume.sh" "$CLAUDE_HOME/bin/claude-auto-resume"
+chmod +x "$CLAUDE_HOME/bin/claude-auto-resume"
+echo "  自動再開スクリプトを配置: $CLAUDE_HOME/bin/claude-auto-resume"
+
+# 4. SessionStart フックをユーザーレベル settings.json にマージ(python3 が必要)
 SETTINGS="$CLAUDE_HOME/settings.json"
 HOOK_CMD='if [ -f "$CLAUDE_PROJECT_DIR/.claude/session-state.md" ]; then echo "=== 前回セッションの作業状態 (.claude/session-state.md) ==="; cat "$CLAUDE_PROJECT_DIR/.claude/session-state.md"; echo "=== 「次のステップ」が残っている場合、再開指示があれば即座に続きから着手すること ==="; fi'
 
@@ -91,8 +97,12 @@ fi
 echo ""
 echo "完了。新しいセッションから全リポジトリで以下が有効になります:"
 echo "  - サブタスク完了ごとの自動チェックポイント(コミット&プッシュ+状態記録)"
+echo "  - Web セッション: デッドマンスイッチによる制限リセット後の自動再開"
 echo "  - /checkpoint : 手動で状態保存(制限が近いとき)"
 echo "  - /resume     : リセット後に続きから再開"
 echo "  - セッション開始時に前回の作業状態を自動表示"
+echo ""
+echo "ローカル CLI での無人自動再開(どのリポジトリでも使用可):"
+echo "  $CLAUDE_HOME/bin/claude-auto-resume \"タスク内容\""
 echo ""
 echo "注意: 各リポジトリに .claude/session-state.md がない場合、最初のチェックポイント時に自動作成されます。"

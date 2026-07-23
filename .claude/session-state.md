@@ -16,6 +16,9 @@
 
 - 作業継続プロトコル(5時間制限対策)の標準化システムを導入
   - CLAUDE.md / セッション開始フック / /checkpoint / /resume / install-global.sh
+- 自動再開システムを追加
+  - Web: デッドマンスイッチ(send_later による再開予約、CLAUDE.md プロトコル化)
+  - ローカル: scripts/claude-auto-resume.sh(制限検知→待機→claude --continue)
 
 ## 次のステップ
 
