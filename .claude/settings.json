@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f \"$CLAUDE_PROJECT_DIR/.claude/session-state.md\" ]; then echo '=== 前回セッションの作業状態 (.claude/session-state.md) ==='; cat \"$CLAUDE_PROJECT_DIR/.claude/session-state.md\"; echo '=== 「次のステップ」が残っている場合、再開指示があれば即座に続きから着手すること ==='; fi"
+          }
+        ]
+      }
+    ]
+  }
+}
