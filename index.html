@@ -248,14 +248,33 @@
       <div class="section-title">お疲れさまでした</div>
       <div class="score-big" id="result-score"></div>
       <div class="missed-list" id="result-missed"></div>
+      <button class="big-btn secondary" id="share-x-btn">結果をXでシェアする</button>
       <button class="big-btn" id="retry-same-btn">同じ内容でもう一度</button>
       <button class="big-btn secondary" id="review-wrong-btn">間違えた問題だけ復習する</button>
       <button class="big-btn secondary" id="back-top-btn">トップに戻る</button>
+    </div>
+    <div class="card" id="result-cta" style="display:none">
+      <div class="section-title" id="result-cta-title"></div>
+      <div id="result-cta-body"></div>
     </div>
   </div>
 </div>
 
 <script>
+// ===== 収益化設定 =====
+// アフィリエイトリンク（A8.net 等で取得した URL）を url に貼ると、
+// 結果画面に自動でカードが表示されます。url が空の項目は表示されません。
+const MONETIZE_CONFIG = {
+  siteUrl: "",                                // 公開後のこのアプリの URL（Xシェアに使用）
+  hashtags: "キャリアコンサルタント試験,キャリコン",
+  ctaTitle: "次の一歩におすすめ",
+  offers: [
+    { label: "キャリコン養成講座の資料請求（無料）", desc: "実務経験がない方は養成講座の修了が受験資格になります。", url: "" },
+    { label: "テキスト・問題集を探す", desc: "最新回対応の問題集で仕上げるのが最短です。", url: "" },
+    { label: "転職エージェントに無料相談", desc: "資格を活かせる求人はエージェント経由が中心です。", url: "" }
+  ]
+};
+
 const QUIZ_DATA = {
  "29": {
   "1": {
@@ -2869,7 +2888,46 @@ function showResult() {
   document.getElementById("result-missed").textContent = missedList.length > 0
     ? "間違えた問題：" + missedList.join("、")
     : "全問正解でした！";
+  renderResultCta();
 }
+
+function renderResultCta() {
+  const card = document.getElementById("result-cta");
+  const body = document.getElementById("result-cta-body");
+  const offers = (MONETIZE_CONFIG.offers || []).filter(o => o.url);
+  if (offers.length === 0) {
+    card.style.display = "none";
+    return;
+  }
+  document.getElementById("result-cta-title").textContent = MONETIZE_CONFIG.ctaTitle;
+  body.innerHTML = "";
+  offers.forEach(o => {
+    const a = document.createElement("a");
+    a.className = "big-btn secondary";
+    a.style.textDecoration = "none";
+    a.style.textAlign = "center";
+    a.href = o.url;
+    a.target = "_blank";
+    a.rel = "noopener sponsored";
+    a.textContent = o.label;
+    const p = document.createElement("div");
+    p.style.cssText = "font-size:13px;color:var(--sub);margin:4px 0 12px;";
+    p.textContent = o.desc || "";
+    body.appendChild(a);
+    body.appendChild(p);
+  });
+  card.style.display = "block";
+}
+
+document.getElementById("share-x-btn").addEventListener("click", () => {
+  const text = `キャリアコンサルタント試験の過去問クイズで ${correctCount}/${queue.length} 問正解！`;
+  const tags = (MONETIZE_CONFIG.hashtags || "").split(",").filter(Boolean).join(",");
+  const url = "https://twitter.com/intent/tweet"
+    + "?text=" + encodeURIComponent(text)
+    + (MONETIZE_CONFIG.siteUrl ? "&url=" + encodeURIComponent(MONETIZE_CONFIG.siteUrl) : "")
+    + (tags ? "&hashtags=" + encodeURIComponent(tags) : "");
+  window.open(url, "_blank");
+});
 
 document.getElementById("retry-same-btn").addEventListener("click", () => {
   queue = buildQueue();
