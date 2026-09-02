@@ -42,18 +42,35 @@ App Store から入れて一度起動します。これで iCloud 上に
 
 ### 2. ウィジェットのスクリプトを登録する
 
-Scriptable で「＋」から新規スクリプトを作り、`ClaudeUsage.js` の中身を
-貼り付けて、名前を **ClaudeUsage** にして保存します。
+Scriptable で「＋」から新規スクリプトを作り、`install-on-iphone.js` の
+中身（5 行）を貼り付けて実行（▶）します。本体がダウンロードされ、
+スクリプト一覧に **ClaudeUsage** が現れます。更新したいときも同じものを
+実行するだけです。
 
-### 3. Mac にエクスポータを置く
+`ClaudeUsage.js` を直接貼り付けて **ClaudeUsage** の名前で保存しても構いません。
+
+### 3. Mac 側をセットアップする
+
+`setup-mac.sh` が、エクスポータの配置と `~/.claude/settings.json` への
+`statusLine` 追記までまとめて行います。既存の設定は保持され、
+上書きする場合はバックアップを取ります。
 
 ```bash
-mkdir -p ~/.claude
-cp claude-status-export.sh ~/.claude/
-chmod +x ~/.claude/claude-status-export.sh
+brew install jq   # 未導入なら
+git clone https://github.com/popolo824-boop/career-consultant-quiz.git
+cd career-consultant-quiz
+git checkout claude/command-support-juerey
+./tools/claude-usage-widget/setup-mac.sh
 ```
 
-`~/.claude/settings.json` に以下を追加します。
+現在の状態だけ見たいときは `--check` を付けます（何も変更しません）。
+
+```bash
+./tools/claude-usage-widget/setup-mac.sh --check
+```
+
+手で設定する場合は、`claude-status-export.sh` を `~/.claude/` に置いて
+実行権限を与え、`~/.claude/settings.json` に以下を足すだけです。
 
 ```json
 {
