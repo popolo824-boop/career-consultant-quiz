@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>ピコと えほんの王国</title>
+<style>
+  :root {
+    --paper: #fbf3df;
+    --paper-dark: #f1e3c2;
+    --ink: #4a3728;
+    --ink-soft: #7a6350;
+    --frame: #8a5a33;
+    --accent: #e0693a;
+    --sky: #8fc7e8;
+    --grass: #9ed27a;
+    --grass-dark: #86bd63;
+    --hp: #e85d5d;
+    --mp: #5c8fe8;
+    --exp: #f2b84b;
+    --good: #3f9d57;
+    --bad: #d6453d;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    font-family: "Hiragino Maru Gothic ProN", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", "Noto Sans JP", sans-serif;
+    background: #5a3d2b url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><circle cx='12' cy='12' r='1.2' fill='%23724e37'/></svg>");
+    color: var(--ink);
+    line-height: 1.6;
+    user-select: none;
+  }
+  .book {
+    max-width: 480px;
+    min-height: 100vh;
+    margin: 0 auto;
+    background: var(--paper);
+    box-shadow: 0 0 0 6px var(--frame), 0 0 0 10px #d9b98a, 0 10px 40px rgba(0,0,0,.4);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .screen { display: none; flex: 1; flex-direction: column; padding: 14px 14px 20px; }
+  .screen.active { display: flex; }
+
+  h1 { font-size: 26px; text-align: center; margin: 24px 0 4px; letter-spacing: .08em; }
+  .tagline { text-align: center; color: var(--ink-soft); font-size: 13px; margin-bottom: 14px; }
+  .hero-art {
+    font-size: 54px; text-align: center; letter-spacing: 8px;
+    background: linear-gradient(var(--sky), #d8ecf7 60%, var(--grass) 60%, var(--grass-dark));
+    border: 3px solid var(--frame); border-radius: 18px; padding: 22px 0 10px; margin: 8px 0 18px;
+  }
+  .btn {
+    display: block; width: 100%; padding: 13px 16px; margin: 8px 0;
+    border: 3px solid var(--frame); border-radius: 14px;
+    background: #fffaf0; color: var(--ink); font-size: 16px; font-weight: bold;
+    font-family: inherit; cursor: pointer; text-align: left;
+    box-shadow: 0 3px 0 #c89a6a; transition: transform .05s;
+  }
+  .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #c89a6a; }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn.primary { background: var(--accent); color: #fff; border-color: #a9431d; box-shadow: 0 3px 0 #a9431d; }
+  .btn.small { padding: 8px 12px; font-size: 14px; margin: 4px 0; border-width: 2px; box-shadow: 0 2px 0 #c89a6a; }
+  .btn.inline { display: inline-block; width: auto; }
+  .row { display: flex; gap: 8px; }
+  .row .btn { flex: 1; }
+  .center { text-align: center; }
+  .note { font-size: 12px; color: var(--ink-soft); text-align: center; margin: 6px 0; }
+
+  /* ---- 絵本の吹き出し ---- */
+  .dialog {
+    position: relative; margin-top: auto;
+    background: #fffaf0; border: 3px solid var(--frame); border-radius: 16px;
+    padding: 14px 16px 16px; min-height: 120px; cursor: pointer;
+  }
+  .dialog .who { font-weight: bold; color: var(--accent); font-size: 14px; margin-bottom: 4px; }
+  .dialog .text { font-size: 16px; white-space: pre-wrap; min-height: 56px; }
+  .dialog .tap { position: absolute; right: 14px; bottom: 6px; font-size: 12px; color: var(--ink-soft); animation: blink 1.2s infinite; }
+  @keyframes blink { 50% { opacity: .2; } }
+  .stage {
+    flex: 1; min-height: 220px; border: 3px solid var(--frame); border-radius: 18px;
+    display: flex; align-items: flex-end; justify-content: center; gap: 18px; padding: 16px;
+    background: linear-gradient(var(--sky), #d8ecf7 62%, var(--grass) 62%, var(--grass-dark)); margin-bottom: 12px;
+  }
+  .stage.night { background: linear-gradient(#2d2f5e, #5a4b7a 62%, #4c6b4a 62%, #3b5639); }
+  .stage.ice { background: linear-gradient(#bfe6f5, #eaf7fb 62%, #d7eef5 62%, #b9dde9); }
+  .stage.castle { background: linear-gradient(#3b2a45, #6a4a6b 62%, #5a5050 62%, #403838); }
+  .actor { font-size: 52px; text-align: center; transition: transform .2s; filter: drop-shadow(0 4px 2px rgba(0,0,0,.25)); }
+  .actor.speaking { transform: translateY(-10px) scale(1.12); }
+  .actor .nm { font-size: 11px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.6); display: block; line-height: 1; margin-top: -4px; }
+
+  /* ---- 章タイトル ---- */
+  .chapter-title { text-align: center; padding: 60px 10px; }
+  .chapter-title .ch { font-size: 14px; color: var(--ink-soft); letter-spacing: .3em; }
+  .chapter-title .tt { font-size: 24px; font-weight: bold; margin-top: 6px; }
+
+  /* ---- ハブ(町・地図) ---- */
+  .panel { background: #fffaf0; border: 3px solid var(--frame); border-radius: 16px; padding: 12px 14px; margin-bottom: 10px; }
+  .panel h2 { font-size: 15px; margin: 0 0 8px; color: var(--frame); }
+  .gold { font-weight: bold; color: #b7791f; }
+  .party-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .pc { border: 2px solid var(--paper-dark); border-radius: 12px; padding: 8px; background: #fff; font-size: 12px; }
+  .pc .nm { font-weight: bold; font-size: 14px; }
+  .bar { height: 7px; background: #e9dcc3; border-radius: 4px; overflow: hidden; margin: 3px 0; }
+  .bar i { display: block; height: 100%; transition: width .3s; }
+  .bar.hp i { background: var(--hp); } .bar.mp i { background: var(--mp); } .bar.exp i { background: var(--exp); }
+  .shop-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px dashed var(--paper-dark); font-size: 14px; }
+  .shop-item .d { flex: 1; } .shop-item .d small { display: block; color: var(--ink-soft); font-size: 11px; }
+
+  /* ---- バトル ---- */
+  .status-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 8px; }
+  .st { background: #fffaf0; border: 2px solid var(--paper-dark); border-radius: 10px; padding: 4px 6px; font-size: 11px; line-height: 1.35; }
+  .st.sel { border-color: var(--accent); box-shadow: 0 0 0 2px #f6c3ad; }
+  .st.done { opacity: .55; }
+  .st.dead { opacity: .35; filter: grayscale(1); }
+  .st .nm { font-weight: bold; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .grid-wrap { position: relative; background: var(--grass); border: 3px solid var(--frame); border-radius: 14px; padding: 6px; margin-bottom: 8px; }
+  .grid-wrap.boss { background: #a68ac4; }
+  .grid-wrap.ice { background: #bfe0ee; }
+  .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .cell {
+    aspect-ratio: 1; border-radius: 7px; background: rgba(255,255,255,.28);
+    display: flex; align-items: center; justify-content: center; position: relative;
+    font-size: 26px; cursor: default; transition: background .15s;
+  }
+  .cell.move { background: rgba(120,180,255,.75); cursor: pointer; }
+  .cell.move:hover { background: rgba(80,150,255,.95); }
+  .cell.target { background: rgba(255,120,110,.8); cursor: pointer; box-shadow: inset 0 0 0 2px #fff; }
+  .cell.ally-target { background: rgba(120,230,150,.85); cursor: pointer; box-shadow: inset 0 0 0 2px #fff; }
+  .cell.splash { box-shadow: inset 0 0 0 3px rgba(255,200,0,.9); }
+  .cell.active { box-shadow: inset 0 0 0 3px var(--accent); }
+  .unit { line-height: 1; transition: transform .15s; filter: drop-shadow(0 2px 1px rgba(0,0,0,.3)); }
+  .unit.enemy { transform: scaleX(-1); }
+  .unit.hit { animation: shake .35s; }
+  .unit.guard::after { content: "🛡"; position: absolute; font-size: 12px; right: 1px; bottom: 1px; transform: none; }
+  @keyframes shake { 20% { transform: translateX(-4px); } 40% { transform: translateX(4px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(3px); } }
+  .unit.enemy.hit { animation: shakeE .35s; }
+  @keyframes shakeE { 20% { transform: scaleX(-1) translateX(-4px); } 40% { transform: scaleX(-1) translateX(4px); } 60% { transform: scaleX(-1) translateX(-3px); } 80% { transform: scaleX(-1) translateX(3px); } }
+  .mini-hp { position: absolute; left: 3px; right: 3px; bottom: 2px; height: 4px; background: rgba(0,0,0,.35); border-radius: 2px; }
+  .mini-hp i { display: block; height: 100%; background: var(--hp); border-radius: 2px; }
+  .mini-hp.ally i { background: var(--good); }
+  .pop {
+    position: absolute; left: 50%; top: 40%; transform: translate(-50%, -50%);
+    font-weight: bold; font-size: 18px; color: #fff; text-shadow: 0 0 3px #000, 0 0 3px #000;
+    animation: popup .9s forwards; pointer-events: none; z-index: 5;
+  }
+  .pop.heal { color: #9bffb0; } .pop.miss { color: #ddd; font-size: 14px; } .pop.crit { color: #ffe066; font-size: 22px; }
+  @keyframes popup { 0% { opacity: 0; transform: translate(-50%, 0); } 15% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -34px); } }
+  .msg {
+    background: #fffaf0; border: 3px solid var(--frame); border-radius: 14px; padding: 10px 12px;
+    font-size: 14px; min-height: 64px; margin-bottom: 8px; white-space: pre-wrap;
+  }
+  .msg .turn { font-size: 11px; color: var(--ink-soft); }
+  .cmd { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .cmd .btn { margin: 0; padding: 10px 6px; font-size: 14px; text-align: center; }
+  .cmd .btn.wide { grid-column: span 3; }
+  .sub-list .btn { margin: 4px 0; display: flex; justify-content: space-between; align-items: center; font-size: 14px; padding: 9px 12px; }
+  .sub-list .btn small { font-weight: normal; color: var(--ink-soft); font-size: 11px; }
+  .result-box { text-align: center; padding: 10px; }
+  .result-box .big { font-size: 26px; font-weight: bold; color: var(--accent); margin: 6px 0; }
+  .lvup { color: var(--good); font-weight: bold; }
+  .hidden { display: none !important; }
+  .fade { animation: fadein .35s; }
+  @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+  .overlay {
+    position: absolute; inset: 0; background: rgba(60,40,30,.55); display: flex; align-items: center; justify-content: center; z-index: 20; padding: 20px;
+  }
+  .overlay .panel { width: 100%; max-height: 80vh; overflow: auto; }
+</style>
+</head>
+<body>
+<div class="book" id="book">
+
+  <!-- タイトル -->
+  <section class="screen active" id="scr-title">
+    <h1>ピコと えほんの王国</h1>
+    <div class="tagline">～ ちいさな王子の だいぼうけん ～</div>
+    <div class="hero-art">🤴🤺🧙</div>
+    <button class="btn primary" id="btn-continue">つづきから</button>
+    <button class="btn" id="btn-new">はじめから</button>
+    <div class="note" id="save-note"></div>
+    <div class="note" style="margin-top:18px">マス目で なかまを うごかして たたかう、えほんのような RPG です。</div>
+  </section>
+
+  <!-- 章タイトル -->
+  <section class="screen" id="scr-chapter">
+    <div class="chapter-title">
+      <div class="ch" id="ch-label"></div>
+      <div class="tt" id="ch-title"></div>
+    </div>
+    <button class="btn primary" id="btn-chapter-go">▶ はじめる</button>
+  </section>
+
+  <!-- ストーリー -->
+  <section class="screen" id="scr-story">
+    <div class="stage" id="stage"></div>
+    <div class="dialog" id="dialog">
+      <div class="who" id="dlg-who"></div>
+      <div class="text" id="dlg-text"></div>
+      <div class="tap">▼ タップで すすむ</div>
+    </div>
+  </section>
+
+  <!-- ハブ -->
+  <section class="screen" id="scr-hub">
+    <div class="panel">
+      <h2 id="hub-title"></h2>
+      <div id="hub-desc" style="font-size:13px"></div>
+      <div style="font-size:13px;margin-top:4px">おかね：<span class="gold" id="hub-gold"></span> G</div>
+    </div>
+    <div class="panel">
+      <h2>なかま</h2>
+      <div class="party-list" id="hub-party"></div>
+    </div>
+    <button class="btn" id="btn-town">🏘 まちへ いく <small style="font-weight:normal">（やどや・どうぐや・セーブ）</small></button>
+    <button class="btn" id="btn-train">🌲 <span id="train-label"></span> <small style="font-weight:normal">（モンスターと たたかう）</small></button>
+    <button class="btn primary" id="btn-boss">⚔ <span id="boss-label"></span></button>
+    <button class="btn small" id="btn-title" style="margin-top:16px">タイトルに もどる</button>
+  </section>
+
+  <!-- 町 -->
+  <section class="screen" id="scr-town">
+    <div class="panel">
+      <h2>🏘 <span id="town-name"></span></h2>
+      <div style="font-size:13px">おかね：<span class="gold" id="town-gold"></span> G</div>
+    </div>
+    <div class="panel">
+      <h2>🛏 やどや</h2>
+      <div style="font-size:13px">HPとMPが ぜんかいふく。たおれた なかまも げんきに。</div>
+      <button class="btn small" id="btn-inn">とまる（<span id="inn-cost"></span> G）</button>
+    </div>
+    <div class="panel">
+      <h2>🧺 どうぐや</h2>
+      <div id="shop-list"></div>
+    </div>
+    <div class="panel">
+      <h2>📖 セーブ</h2>
+      <button class="btn small" id="btn-save">ぼうけんの きろくを つける</button>
+      <div class="note" id="save-done"></div>
+    </div>
+    <button class="btn" id="btn-town-back">← もどる</button>
+  </section>
+
+  <!-- バトル -->
+  <section class="screen" id="scr-battle">
+    <div class="status-strip" id="status-strip"></div>
+    <div class="grid-wrap" id="grid-wrap"><div class="grid" id="grid"></div></div>
+    <div class="msg" id="msg"><div class="turn" id="msg-turn"></div><div id="msg-text"></div></div>
+    <div id="cmd-area"></div>
+  </section>
+
+  <!-- 勝利/敗北 -->
+  <section class="screen" id="scr-result">
+    <div class="panel result-box">
+      <div id="res-head" class="big"></div>
+      <div id="res-body" style="font-size:14px;text-align:left;white-space:pre-wrap"></div>
+    </div>
+    <button class="btn primary" id="btn-res-ok">つぎへ</button>
+  </section>
+
+  <!-- エンディング -->
+  <section class="screen" id="scr-ending">
+    <h1>おしまい</h1>
+    <div class="hero-art">🤴🤺🧙🐉</div>
+    <div class="panel" style="font-size:14px;white-space:pre-wrap" id="ending-text"></div>
+    <button class="btn" id="btn-ending-title">タイトルへ</button>
+  </section>
+
+</div>
+
+<script>
+/* ========================================================================
+   データ定義
+   ======================================================================== */
+const GW = 7, GH = 4, MAX_LV = 40;
+const SAVE_KEY = "piko_ehon_rpg_save_v1";
+const expNeed = L => 20 + 15 * L;
+
+const HERO_DEFS = {
+  piko:  { id: "piko",  name: "ピコ",   job: "おうじ",       emoji: "🤴", hp: [36, 9],  mp: [4, 1.2], atk: [9, 2.5], def: [4, 1.3], move: 3, range: 1, start: [1, 1],
+           spells: [["yuuki", 1], ["ikari", 6], ["kizuna", 12]] },
+  gardo: { id: "gardo", name: "ガルド", job: "きし",         emoji: "🤺", hp: [50, 12], mp: [3, 1],   atk: [8, 2.3], def: [7, 1.9], move: 2, range: 2, start: [1, 0],
+           spells: [["nagi", 1], ["teppeki", 5]] },
+  momo:  { id: "momo",  name: "モモ",   job: "まほうつかい", emoji: "🧙", hp: [28, 6],  mp: [8, 2.2], atk: [7, 2],   def: [3, 0.9], move: 2, range: 3, start: [0, 2],
+           spells: [["fire", 1], ["heal", 1], ["blizzard", 7], ["healall", 11]] },
+  ruu:   { id: "ruu",   name: "ルゥ",   job: "こりゅう",     emoji: "🐉", hp: [40, 10], mp: [5, 1.5], atk: [10, 2.6], def: [5, 1.4], move: 3, range: 1, start: [1, 3],
+           spells: [["bite", 1], ["breath", 1], ["roar", 10]] }
+};
+const SPELLS = {
+  yuuki:    { name: "ゆうきの一げき", cost: 3, kind: "dmg",  power: 2.0, range: 1, aoe: 0, desc: "ちかくの てき1体に 大ダメージ" },
+  ikari:    { name: "おうじのいかり", cost: 5, kind: "dmg",  power: 1.4, range: 1, aoe: 1, desc: "てきと そのまわりに ダメージ" },
+  kizuna:   { name: "きずなのひかり", cost: 6, kind: "healall", ratio: 0.35, desc: "なかま ぜんいんの HPを かいふく" },
+  nagi:     { name: "なぎはらい",     cost: 3, kind: "dmg",  power: 1.1, range: 0, aoe: 1, self: true, desc: "じぶんの まわりの てきを まとめて こうげき" },
+  teppeki:  { name: "てっぺき",       cost: 4, kind: "guardall", desc: "このターン なかま ぜんいんが ぼうぎょ" },
+  fire:     { name: "ファイア",       cost: 4, kind: "dmg",  power: 1.5, range: 3, aoe: 1, desc: "てきと そのまわりを やきはらう" },
+  heal:     { name: "ヒール",         cost: 3, kind: "heal", ratio: 0.45, desc: "なかま1人の HPを かいふく" },
+  blizzard: { name: "ブリザド",       cost: 7, kind: "dmg",  power: 1.6, range: 3, aoe: 2, desc: "ひろい はんいを こおらせる" },
+  healall:  { name: "ヒールオール",   cost: 7, kind: "healall", ratio: 0.4, desc: "なかま ぜんいんの HPを かいふく" },
+  bite:     { name: "かみつき",       cost: 2, kind: "dmg",  power: 1.6, range: 1, aoe: 0, desc: "するどい きばで かみつく" },
+  breath:   { name: "ちいさなブレス", cost: 4, kind: "dmg",  power: 1.3, range: 2, aoe: 1, desc: "ほのおを はいて まわりも やく" },
+  roar:     { name: "りゅうのほえごえ", cost: 6, kind: "dmg", power: 1.2, range: 0, aoe: 2, self: true, desc: "じぶんの まわり ひろく ダメージ" }
+};
+const ITEMS = {
+  herb:    { name: "やくそう",       price: 20,  desc: "HPを 半分ほど かいふく", emoji: "🌿" },
+  drop:    { name: "まほうのしずく", price: 35,  desc: "MPを 半分ほど かいふく", emoji: "💧" },
+  feather: { name: "ふっかつのはね", price: 120, desc: "たおれた なかまを ふっかつ", emoji: "🪶" }
+};
+const ENEMY_TYPES = {
+  slime:   { name: "ぷにスライム",   emoji: "🟢", hp: 1.0, atk: 0.9,  def: 0.8, move: 1, range: 1 },
+  bat:     { name: "よるコウモリ",   emoji: "🦇", hp: 0.7, atk: 0.9,  def: 0.7, move: 3, range: 1 },
+  shroom:  { name: "あるきキノコ",   emoji: "🍄", hp: 1.2, atk: 0.8,  def: 1.0, move: 1, range: 1 },
+  ghost:   { name: "いたずらゴースト", emoji: "👻", hp: 0.8, atk: 1.0, def: 0.8, move: 2, range: 2 },
+  wolf:    { name: "ゆきオオカミ",   emoji: "🐺", hp: 1.1, atk: 1.15, def: 0.9, move: 3, range: 1 },
+  golem:   { name: "こおりゴーレム", emoji: "🧊", hp: 1.6, atk: 1.0,  def: 1.4, move: 1, range: 1 },
+  imp:     { name: "こあくま",       emoji: "👿", hp: 0.9, atk: 1.2,  def: 0.9, move: 2, range: 2 },
+  knight:  { name: "からくりへいし", emoji: "🤖", hp: 1.4, atk: 1.1,  def: 1.3, move: 2, range: 1 },
+  eye:     { name: "のぞきめだま",   emoji: "👁", hp: 0.8, atk: 1.25, def: 0.8, move: 1, range: 3 }
+};
+
+const CHAPTERS = [
+  { label: "だい1しょう", title: "おしろを ぬけだして", town: "ポロンのまち", field: "ひだまりの森", fieldBg: "",
+    enemyLv: 1, bossLv: 3, pool: ["slime", "bat", "shroom"],
+    boss: { name: "森のぬし 大キノコ", emoji: "🍄", hp: 3.2, atk: 1.25, def: 1.2, move: 1, range: 2, minions: ["shroom", "slime"] },
+    bossLabel: "森のぬしに いどむ", innCost: 10,
+    intro: [
+      ["bg", ""], ["cast", "piko", "gardo"],
+      ["piko", "ふぅ…… きょうも おべんきょうと おぎょうぎ。\nおしろの そとには なにが あるんだろう。"],
+      ["gardo", "ピコさま！ また まどから ぬけだそうと していますね？"],
+      ["piko", "ガルド、おねがい！ いっしょに 森に いこう。\n「森の おくで ふしぎな ひかりを 見た」って うわさ、きになるんだ。"],
+      ["gardo", "……はぁ。王さまに しかられるのは わたしですよ。\nしかたありません。おともします！"],
+      ["cast", "piko", "gardo", "momo"],
+      ["momo", "ちょっと そこの ふたり！ 森の いきものたちが あばれているの。\nあたしは まほうつかいの モモ。てつだって くれる？"],
+      ["piko", "もちろん！ ぼくは ピコ。よろしくね、モモ！"],
+      ["sys", "モモが なかまに なった！"]
+    ],
+    beforeBoss: [
+      ["bg", ""], ["cast", "piko", "momo", "gardo"],
+      ["momo", "森の おくの 大きなキノコ…… あれが あばれている げんいんね。"],
+      ["gardo", "ピコさま、わたしの うしろに。……いえ、もう ピコさまも りっぱな せんしですね。"],
+      ["piko", "いくよ、みんな！"]
+    ],
+    afterBoss: [
+      ["bg", ""], ["cast", "piko", "momo", "gardo"],
+      ["sys", "大キノコは おとなしくなり、森に へいわが もどった。"],
+      ["momo", "キノコが あばれていたのは、北の 山から つめたい かぜが ふいてきたせい みたい。"],
+      ["piko", "北の山…… こおりの ほこらが あるって きいたことが あるよ。"],
+      ["gardo", "まさか 行く おつもりで……？ ……わかりました。おともします。"]
+    ]
+  },
+  { label: "だい2しょう", title: "こおりの ほこら", town: "ユキノのむら", field: "ふぶきの山みち", fieldBg: "ice",
+    enemyLv: 5, bossLv: 8, pool: ["wolf", "golem", "ghost", "bat"],
+    boss: { name: "こおりの まじょ", emoji: "🧝", hp: 3.4, atk: 1.3, def: 1.2, move: 2, range: 3, minions: ["golem", "wolf"] },
+    bossLabel: "こおりの ほこらへ", innCost: 25,
+    intro: [
+      ["bg", "ice"], ["cast", "piko", "gardo", "momo"],
+      ["gardo", "さむい…… 山みちが ぜんぶ こおっています。"],
+      ["cast", "piko", "gardo", "momo", "ruu"],
+      ["ruu", "きゅう…… きゅうぅ……"],
+      ["piko", "ちいさな ドラゴン！ こおりに はさまって うごけないんだ。\nまって、いま たすけるよ！"],
+      ["ruu", "……きゅっ！ ありがと！ ぼく ルゥ！ おまえ、いい にんげん！"],
+      ["momo", "しゃべるドラゴン……！ ほこらの まじょに おそわれて にげてきたんだって。"],
+      ["ruu", "ルゥも いっしょに いく！ まじょ、やっつける！"],
+      ["sys", "こりゅうの ルゥが なかまに なった！"]
+    ],
+    beforeBoss: [
+      ["bg", "ice"], ["cast", "piko", "ruu", "momo", "gardo"],
+      ["sys", "ほこらの おくに、こおりの まじょが たっていた。"],
+      ["piko", "どうして 王国を こおらせるの！"],
+      ["sys", "まじょは こたえず、つめたい めで こちらを 見た。"]
+    ],
+    afterBoss: [
+      ["bg", "ice"], ["cast", "piko", "ruu", "momo", "gardo"],
+      ["sys", "まじょの こおりが とけ、中から ひとりの 女のひとが あらわれた。"],
+      ["piko", "……あなたは？"],
+      ["sys", "「わたしは からくり大王に あやつられていたの。大王は いま、やみのしろで 王国を のっとる したくを している……」"],
+      ["ruu", "大王、わるいやつ！ ルゥ、おこった！"],
+      ["gardo", "ピコさま。ここまで きたら、さいごまで おともします。"]
+    ]
+  },
+  { label: "だい3しょう", title: "からくり大王と やみのしろ", town: "さいごの やどば", field: "しろの まわり", fieldBg: "night",
+    enemyLv: 10, bossLv: 13, pool: ["imp", "knight", "eye", "ghost"],
+    boss: { name: "からくり大王ゾロ", emoji: "🤡", hp: 4.0, atk: 1.35, def: 1.3, move: 2, range: 2, minions: ["knight", "knight", "eye"] },
+    bossLabel: "やみのしろに のりこむ", innCost: 40,
+    intro: [
+      ["bg", "castle"], ["cast", "piko", "ruu", "momo", "gardo"],
+      ["sys", "やみのしろが くろい くもの 中に そびえている。"],
+      ["momo", "あの しろ…… からくりだらけ。中は きっと てきが いっぱいよ。"],
+      ["piko", "ぼくの 王国は、ぼくが まもる。みんな、ちからを かして！"],
+      ["ruu", "きゅーっ！"]
+    ],
+    beforeBoss: [
+      ["bg", "castle"], ["cast", "piko", "ruu", "momo", "gardo"],
+      ["sys", "「ふぉっふぉっふぉ！ よくきたな ちび王子！ わしの からくりぐんだんの まえでは おまえなど……」"],
+      ["piko", "ながい！ いくよ みんな！"],
+      ["sys", "「はなしは さいごまで きけーっ！」"]
+    ],
+    afterBoss: []
+  }
+];
+
+const ENDING_TEXT =
+`からくり大王ゾロは「おぼえてろー！」と さけびながら、ぽんこつの ひこうせんで にげていった。
+
+くろい くもは はれ、王国に 日ざしが もどった。
+
+王さまは ピコを ぎゅっと だきしめた。
+「おまえは もう、りっぱな 王子だ。……でも、つぎは ひとこと いってから 行きなさい」
+
+ピコは ガルドと、モモと、ルゥと、えがおで かおを みあわせた。
+
+こうして、ちいさな王子の だいぼうけんは おしまい。
+でも、えほんの つぎの ページは、まだ まっしろのまま……。`;
+
+/* ========================================================================
+   ユーティリティ
+   ======================================================================== */
+const $ = id => document.getElementById(id);
+const sleep = ms => new Promise(r => setTimeout(r, window.__fast ? 0 : ms));
+const rnd = () => Math.random();
+const dist = (a, b) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+const statAt = (pair, L) => Math.round(pair[0] + pair[1] * L);
+function showScreen(name) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active", "fade"));
+  const el = $("scr-" + name); el.classList.add("active", "fade");
+  window.scrollTo(0, 0);
+}
+
+/* ========================================================================
+   ゲーム状態・セーブ
+   ======================================================================== */
+let G = null; // { chapter, heroes:{id:{lv,exp,hp,mp}}, party:[ids], gold, items:{}, bossCleared }
+
+function newGame() {
+  G = { chapter: 0, heroes: {}, party: ["piko", "gardo"], gold: 30, items: { herb: 2, drop: 0, feather: 0 }, phase: "intro" };
+  ["piko", "gardo"].forEach(id => addHero(id, 1));
+}
+function addHero(id, lv) {
+  const h = { lv, exp: 0 };
+  const m = maxStats(id, lv); h.hp = m.hp; h.mp = m.mp;
+  G.heroes[id] = h;
+  if (!G.party.includes(id)) G.party.push(id);
+}
+function maxStats(id, L) {
+  const d = HERO_DEFS[id];
+  return { hp: statAt(d.hp, L), mp: statAt(d.mp, L), atk: statAt(d.atk, L), def: statAt(d.def, L) };
+}
+function knownSpells(id, L) { return HERO_DEFS[id].spells.filter(([, lv]) => L >= lv).map(([s]) => s); }
+function saveGame() { localStorage.setItem(SAVE_KEY, JSON.stringify(G)); }
+function loadGame() { try { return JSON.parse(localStorage.getItem(SAVE_KEY)); } catch (e) { return null; } }
+
+/* ========================================================================
+   タイトル
+   ======================================================================== */
+function initTitle() {
+  const s = loadGame();
+  $("btn-continue").disabled = !s;
+  $("save-note").textContent = s ? `きろく：${CHAPTERS[s.chapter].label}「${CHAPTERS[s.chapter].title}」 ピコ Lv${s.heroes.piko.lv}` : "まだ ぼうけんの きろくは ありません";
+  showScreen("title");
+}
+$("btn-new").addEventListener("click", () => {
+  if (loadGame() && !confirm("いまの きろくを けして、はじめから あそびますか？")) return;
+  newGame(); startChapter();
+});
+$("btn-continue").addEventListener("click", () => { G = loadGame(); if (!G) return; if (G.phase === "intro") startChapter(); else goHub(); });
+$("btn-title").addEventListener("click", () => { saveGame(); initTitle(); });
+$("btn-ending-title").addEventListener("click", initTitle);
+
+/* ========================================================================
+   章・ストーリー
+   ======================================================================== */
+function startChapter() {
+  const c = CHAPTERS[G.chapter];
+  $("ch-label").textContent = c.label; $("ch-title").textContent = c.title;
+  showScreen("chapter");
+  $("btn-chapter-go").onclick = () => playStory(c.intro, () => {
+    if (G.chapter === 0 && !G.party.includes("momo")) addHero("momo", 1);
+    if (G.chapter === 1 && !G.party.includes("ruu")) addHero("ruu", Math.max(4, G.heroes.piko.lv - 1));
+    G.phase = "hub"; saveGame(); goHub();
+  });
+}
+
+function playStory(lines, done) {
+  let i = 0, cast = [];
+  const stage = $("stage");
+  const render = () => {
+    if (i >= lines.length) { done(); return; }
+    const [who, ...rest] = lines[i];
+    if (who === "bg") { stage.className = "stage " + rest[0]; i++; render(); return; }
+    if (who === "cast") {
+      cast = rest;
+      stage.innerHTML = cast.map(id => `<div class="actor" data-id="${id}">${HERO_DEFS[id].emoji}<span class="nm">${HERO_DEFS[id].name}</span></div>`).join("");
+      i++; render(); return;
+    }
+    stage.querySelectorAll(".actor").forEach(a => a.classList.toggle("speaking", a.dataset.id === who));
+    $("dlg-who").textContent = who === "sys" ? "" : HERO_DEFS[who].name;
+    $("dlg-text").textContent = rest[0];
+    i++;
+  };
+  $("dialog").onclick = render;
+  showScreen("story");
+  render();
+}
+
+/* ========================================================================
+   ハブ
+   ======================================================================== */
+function goHub() {
+  const c = CHAPTERS[G.chapter];
+  $("hub-title").textContent = `${c.label}「${c.title}」`;
+  $("hub-desc").textContent = `${c.town}の ちかくに いる。${c.field}で しゅぎょうしてから、${c.bossLabel.replace(/に いどむ|へ|に のりこむ/, "")}の ボスに いどもう。（めやす Lv${c.bossLv}）`;
+  $("hub-gold").textContent = G.gold;
+  $("train-label").textContent = `${c.field}で しゅぎょう`;
+  $("boss-label").textContent = c.bossLabel;
+  $("hub-party").innerHTML = G.party.map(id => {
+    const h = G.heroes[id], d = HERO_DEFS[id], m = maxStats(id, h.lv);
+    return `<div class="pc"><div class="nm">${d.emoji} ${d.name} <small>Lv${h.lv}</small></div>
+      <div>HP ${h.hp}/${m.hp}</div><div class="bar hp"><i style="width:${100 * h.hp / m.hp}%"></i></div>
+      <div>MP ${h.mp}/${m.mp}</div><div class="bar mp"><i style="width:${100 * h.mp / m.mp}%"></i></div>
+      <div>EXP ${h.exp}/${expNeed(h.lv)}</div><div class="bar exp"><i style="width:${100 * h.exp / expNeed(h.lv)}%"></i></div>
+      <div style="color:var(--ink-soft)">こうげき ${m.atk}　ぼうぎょ ${m.def}</div></div>`;
+  }).join("");
+  showScreen("hub");
+}
+$("btn-town").addEventListener("click", goTown);
+$("btn-train").addEventListener("click", () => startBattle(false));
+$("btn-boss").addEventListener("click", () => {
+  const c = CHAPTERS[G.chapter];
+  playStory(c.beforeBoss, () => startBattle(true));
+});
+
+/* ---- 町 ---- */
+function goTown() {
+  const c = CHAPTERS[G.chapter];
+  $("town-name").textContent = c.town; $("town-gold").textContent = G.gold; $("inn-cost").textContent = c.innCost;
+  $("btn-inn").disabled = G.gold < c.innCost;
+  $("save-done").textContent = "";
+  $("shop-list").innerHTML = Object.entries(ITEMS).map(([k, it]) =>
+    `<div class="shop-item"><span style="font-size:22px">${it.emoji}</span><div class="d">${it.name}（もってる：${G.items[k] || 0}）<small>${it.desc}</small></div>
+     <button class="btn small inline" data-buy="${k}" ${G.gold < it.price ? "disabled" : ""}>${it.price} G</button></div>`).join("");
+  $("shop-list").querySelectorAll("[data-buy]").forEach(b => b.onclick = () => {
+    const k = b.dataset.buy; if (G.gold < ITEMS[k].price) return;
+    G.gold -= ITEMS[k].price; G.items[k] = (G.items[k] || 0) + 1; saveGame(); goTown();
+  });
+  showScreen("town");
+}
+$("btn-inn").addEventListener("click", () => {
+  const c = CHAPTERS[G.chapter]; if (G.gold < c.innCost) return;
+  G.gold -= c.innCost;
+  G.party.forEach(id => { const m = maxStats(id, G.heroes[id].lv); G.heroes[id].hp = m.hp; G.heroes[id].mp = m.mp; });
+  saveGame(); goTown(); $("save-done").textContent = "ぐっすり ねむって、みんな げんきに なった！";
+});
+$("btn-save").addEventListener("click", () => { saveGame(); $("save-done").textContent = "きろくを つけた！"; });
+$("btn-town-back").addEventListener("click", goHub);
+
+/* ========================================================================
+   バトル：エンジン
+   ======================================================================== */
+let B = null; // battle state
+
+function makeHeroUnit(id) {
+  const d = HERO_DEFS[id], h = G.heroes[id], m = maxStats(id, h.lv);
+  return { kind: "hero", id, name: d.name, emoji: d.emoji, lv: h.lv, hp: h.hp, mp: h.mp, maxHp: m.hp, maxMp: m.mp, atk: m.atk, def: m.def,
+           move: d.move, range: d.range, spells: knownSpells(id, h.lv), x: d.start[0], y: d.start[1], acted: false, guard: false };
+}
+function makeEnemy(t, E, name, boss) {
+  const maxHp = Math.round((22 + 11 * E) * t.hp);
+  return { kind: "enemy", name, emoji: t.emoji, boss: !!boss, maxHp, hp: maxHp,
+           atk: Math.round((6 + 2.3 * E) * t.atk), def: Math.round((2 + 1.1 * E) * t.def), move: t.move, range: t.range, guard: false, lv: E };
+}
+function spawnEnemies(c, isBoss) {
+  const E = isBoss ? c.bossLv : c.enemyLv + Math.floor(rnd() * 2);
+  let list = [];
+  if (isBoss) {
+    list.push(makeEnemy(c.boss, E, c.boss.name, true));
+    c.boss.minions.forEach(k => list.push(makeEnemy(ENEMY_TYPES[k], E - 1, ENEMY_TYPES[k].name)));
+  } else {
+    const n = 2 + (rnd() < 0.5 ? 1 : 0) + (G.party.length >= 4 && rnd() < 0.4 ? 1 : 0);
+    for (let i = 0; i < n; i++) { const k = c.pool[Math.floor(rnd() * c.pool.length)]; list.push(makeEnemy(ENEMY_TYPES[k], E, ENEMY_TYPES[k].name)); }
+  }
+  // 同名に A/B を付ける
+  const cnt = {}, seen = {};
+  list.forEach(e => cnt[e.name] = (cnt[e.name] || 0) + 1);
+  list.forEach(e => { if (cnt[e.name] > 1) { seen[e.name] = (seen[e.name] || 0) + 1; e.name += String.fromCharCode(64 + seen[e.name]); } });
+  // 配置（右側2列）
+  const free = []; for (let x = GW - 2; x < GW; x++) for (let y = 0; y < GH; y++) free.push([x, y]);
+  for (let i = free.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [free[i], free[j]] = [free[j], free[i]]; }
+  list.forEach(e => {
+    if (e.boss) { const k = free.findIndex(p => p[0] === GW - 1 && (p[1] === 1 || p[1] === 2)); [e.x, e.y] = free.splice(k >= 0 ? k : 0, 1)[0]; }
+    else [e.x, e.y] = free.shift();
+  });
+  return list;
+}
+function calcDamage(atk, def, power, target) {
+  let d = atk * power * (0.9 + 0.2 * rnd()) - def * 0.5;
+  const crit = rnd() < 0.08;
+  if (crit) d *= 1.6;
+  if (target.guard) d *= 0.5;
+  return { dmg: Math.max(1, Math.round(d)), crit };
+}
+function allUnits() { return [...B.heroes, ...B.enemies]; }
+function unitAt(x, y) { return allUnits().find(u => u.hp > 0 && u.x === x && u.y === y); }
+function reachable(unit) {
+  const occ = new Set(allUnits().filter(u => u !== unit && u.hp > 0).map(u => u.x + "," + u.y));
+  const seen = new Map([[unit.x + "," + unit.y, 0]]);
+  const q = [[unit.x, unit.y]];
+  while (q.length) {
+    const [x, y] = q.shift(); const d = seen.get(x + "," + y);
+    if (d >= unit.move) continue;
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const nx = x + dx, ny = y + dy, k = nx + "," + ny;
+      if (nx < 0 || ny < 0 || nx >= GW || ny >= GH || occ.has(k) || seen.has(k)) continue;
+      seen.set(k, d + 1); q.push([nx, ny]);
+    }
+  }
+  return [...seen.entries()].map(([k, d]) => { const [x, y] = k.split(",").map(Number); return { x, y, d }; });
+}
+function planEnemyAct(e) {
+  const heroes = B.heroes.filter(u => u.hp > 0);
+  if (!heroes.length) return null;
+  const cells = reachable(e);
+  let best = null, bestScore = -Infinity;
+  for (const c of cells) for (const h of heroes) {
+    const d = Math.abs(c.x - h.x) + Math.abs(c.y - h.y);
+    if (d > e.range) continue;
+    const score = -h.hp * 100 + (e.range > 1 ? d * 10 : 0) - c.d;
+    if (score > bestScore) { bestScore = score; best = { x: c.x, y: c.y, target: h }; }
+  }
+  if (best) return best;
+  let bc = null, bd = Infinity;
+  for (const c of cells) {
+    const nd = Math.min(...heroes.map(h => Math.abs(c.x - h.x) + Math.abs(c.y - h.y)));
+    if (nd < bd || (nd === bd && c.d < bc.d)) { bd = nd; bc = c; }
+  }
+  return { x: bc.x, y: bc.y, target: null };
+}
+
+/* ========================================================================
+   バトル：進行
+   ======================================================================== */
+function startBattle(isBoss) {
+  const c = CHAPTERS[G.chapter];
+  const heroes = G.party.map(makeHeroUnit);
+  if (heroes.every(h => h.hp <= 0)) { alert("みんな たおれている！ やどやで やすもう。"); return; }
+  B = { isBoss, chapter: c, heroes, enemies: spawnEnemies(c, isBoss), round: 0, sel: null, mode: "idle", busy: false, log: "" };
+  $("grid-wrap").className = "grid-wrap " + (isBoss ? "boss" : c.fieldBg);
+  showScreen("battle");
+  setMsg(isBoss ? `${c.boss.name}が あらわれた！` : `${B.enemies.map(e => e.name).join("、")}が あらわれた！`);
+  renderBattle();
+  startPlayerPhase();
+}
+function setMsg(t) { $("msg-text").textContent = t; }
+function startPlayerPhase() {
+  B.round++;
+  B.heroes.forEach(h => { h.acted = false; h.guard = false; h.moved = false; if (h.hp > 0 && B.round > 1) h.mp = Math.min(h.maxMp, h.mp + 1); });
+  $("msg-turn").textContent = `ターン ${B.round}　なかまの ばん`;
+  B.sel = null; B.mode = "idle";
+  autoSelectNext();
+}
+function autoSelectNext() {
+  const next = B.heroes.find(h => h.hp > 0 && !h.acted);
+  if (!next) { endPlayerPhase(); return; }
+  selectHero(next);
+}
+function selectHero(h) {
+  B.sel = h; B.mode = "idle"; B.moveCells = reachable(h);
+  setMsg(`${h.name}の ばん。マスを えらぶと いどう、コマンドで こうどう。`);
+  renderBattle(); renderCommands();
+}
+function finishAction() {
+  B.sel.acted = true; B.mode = "idle";
+  renderBattle();
+  const left = B.heroes.filter(h => h.hp > 0 && !h.acted);
+  if (!left.length) { endPlayerPhase(); return; }
+  if (!B.enemies.some(e => e.hp > 0)) { win(); return; }
+  autoSelectNext();
+}
+async function endPlayerPhase() {
+  B.sel = null; B.mode = "busy"; renderBattle(); renderCommands();
+  if (!B.enemies.some(e => e.hp > 0)) { win(); return; }
+  $("msg-turn").textContent = `ターン ${B.round}　てきの ばん`;
+  await sleep(400);
+  for (const e of B.enemies) {
+    if (e.hp <= 0) continue;
+    const plan = planEnemyAct(e); if (!plan) break;
+    if (plan.x !== e.x || plan.y !== e.y) { e.x = plan.x; e.y = plan.y; renderBattle(); await sleep(300); }
+    if (plan.target) {
+      const t = plan.target;
+      const { dmg, crit } = calcDamage(e.atk, t.def, 1, t);
+      t.hp = Math.max(0, t.hp - dmg);
+      setMsg(`${e.name}の こうげき！ ${t.name}に ${dmg}の ダメージ${crit ? "（かいしん！）" : ""}${t.hp <= 0 ? `\n${t.name}は たおれた…` : ""}`);
+      popDamage(t, dmg, crit ? "crit" : ""); shakeUnit(t); renderBattle();
+      await sleep(650);
+      if (B.heroes.every(h => h.hp <= 0)) { lose(); return; }
+    } else { setMsg(`${e.name}は ちかづいてきた。`); await sleep(350); }
+  }
+  startPlayerPhase();
+}
+
+/* ---- プレイヤー行動 ---- */
+function doMove(x, y) {
+  const h = B.sel; h.x = x; h.y = y; h.moved = true; B.moveCells = [];
+  B.mode = "idle"; renderBattle(); renderCommands();
+}
+async function doAttack(target) {
+  const h = B.sel; B.mode = "busy"; renderCommands();
+  const { dmg, crit } = calcDamage(h.atk, target.def, 1, target);
+  target.hp = Math.max(0, target.hp - dmg);
+  setMsg(`${h.name}の こうげき！ ${target.name}に ${dmg}の ダメージ${crit ? "（かいしん の いちげき！）" : ""}${target.hp <= 0 ? `\n${target.name}を たおした！` : ""}`);
+  popDamage(target, dmg, crit ? "crit" : ""); shakeUnit(target);
+  await sleep(600); finishAction();
+}
+async function doSpell(spellId, target) {
+  const h = B.sel, S = SPELLS[spellId]; B.mode = "busy"; renderCommands();
+  h.mp -= S.cost;
+  let lines = [`${h.name}の ${S.name}！`];
+  if (S.kind === "dmg") {
+    const center = S.self ? h : target;
+    const hits = B.enemies.filter(e => e.hp > 0 && dist(e, center) <= S.aoe && (S.aoe > 0 || e === target));
+    if (S.self && S.aoe > 0) hits.splice(0, hits.length, ...B.enemies.filter(e => e.hp > 0 && dist(e, h) <= S.aoe));
+    for (const e of hits) {
+      const { dmg, crit } = calcDamage(h.atk, e.def, S.power, e);
+      e.hp = Math.max(0, e.hp - dmg);
+      lines.push(`${e.name}に ${dmg}${crit ? "（かいしん！）" : ""}${e.hp <= 0 ? "、たおした！" : ""}`);
+      popDamage(e, dmg, crit ? "crit" : ""); shakeUnit(e);
+    }
+    if (!hits.length) lines.push("しかし だれにも あたらなかった。");
+  } else if (S.kind === "heal") {
+    const v = Math.round(target.maxHp * S.ratio); target.hp = Math.min(target.maxHp, target.hp + v);
+    lines.push(`${target.name}の HPが ${v} かいふく！`); popDamage(target, v, "heal");
+  } else if (S.kind === "healall") {
+    B.heroes.filter(u => u.hp > 0).forEach(u => { const v = Math.round(u.maxHp * S.ratio); u.hp = Math.min(u.maxHp, u.hp + v); popDamage(u, v, "heal"); });
+    lines.push("なかま ぜんいんの HPが かいふく！");
+  } else if (S.kind === "guardall") {
+    B.heroes.filter(u => u.hp > 0).forEach(u => u.guard = true);
+    lines.push("なかま ぜんいんが みを まもる かまえ！");
+  }
+  setMsg(lines.join("\n")); renderBattle();
+  await sleep(700); finishAction();
+}
+async function doItem(itemId, target) {
+  const h = B.sel; B.mode = "busy"; renderCommands();
+  G.items[itemId]--;
+  let t = "";
+  if (itemId === "herb") { const v = Math.round(target.maxHp * 0.5); target.hp = Math.min(target.maxHp, target.hp + v); t = `${target.name}の HPが ${v} かいふく！`; popDamage(target, v, "heal"); }
+  if (itemId === "drop") { const v = Math.round(target.maxMp * 0.5); target.mp = Math.min(target.maxMp, target.mp + v); t = `${target.name}の MPが ${v} かいふく！`; popDamage(target, v, "heal"); }
+  if (itemId === "feather") { target.hp = Math.round(target.maxHp * 0.5); target.acted = true; t = `${target.name}が ふっかつした！`; popDamage(target, target.hp, "heal"); }
+  setMsg(`${h.name}は ${ITEMS[itemId].name}を つかった！\n${t}`); renderBattle();
+  await sleep(700); finishAction();
+}
+function doGuard() { const h = B.sel; h.guard = true; setMsg(`${h.name}は みを まもっている。`); finishAction(); }
+function doWait() { setMsg(`${B.sel.name}は ようすを 見ている。`); finishAction(); }
+async function doFlee() {
+  B.mode = "busy"; renderCommands();
+  if (rnd() < 0.7) { setMsg("うまく にげだした！"); await sleep(600); syncHeroesToSave(); saveGame(); goHub(); }
+  else { setMsg("にげられなかった！"); await sleep(600); B.heroes.forEach(h => h.acted = true); endPlayerPhase(); }
+}
+
+/* ---- 勝敗 ---- */
+function syncHeroesToSave() { B.heroes.forEach(h => { G.heroes[h.id].hp = h.hp; G.heroes[h.id].mp = h.mp; }); }
+function win() {
+  B.mode = "busy"; renderCommands();
+  const c = B.chapter;
+  let exp = 0, gold = 0;
+  B.enemies.forEach(e => { exp += e.boss ? 60 + 12 * e.lv : 8 + 4 * e.lv; gold += e.boss ? 80 + 10 * e.lv : 5 + 3 * e.lv; });
+  const alive = B.heroes.filter(h => h.hp > 0);
+  const each = Math.round(exp / Math.max(1, alive.length) * 1.2);
+  let lines = [`けいけんち ${each}（ひとりあたり）、${gold} G を てにいれた！`];
+  if (!B.isBoss && rnd() < 0.3) { const k = rnd() < 0.7 ? "herb" : "drop"; G.items[k] = (G.items[k] || 0) + 1; lines.push(`${ITEMS[k].name}を みつけた！`); }
+  G.gold += gold;
+  alive.forEach(h => {
+    const s = G.heroes[h.id]; s.exp += each;
+    while (s.lv < MAX_LV && s.exp >= expNeed(s.lv)) {
+      s.exp -= expNeed(s.lv); s.lv++;
+      const m = maxStats(h.id, s.lv); const before = maxStats(h.id, s.lv - 1);
+      h.hp = Math.min(m.hp, h.hp + (m.hp - before.hp)); h.mp = Math.min(m.mp, h.mp + (m.mp - before.mp));
+      lines.push(`★ ${h.name}は Lv${s.lv}に あがった！`);
+      HERO_DEFS[h.id].spells.filter(([, lv]) => lv === s.lv).forEach(([sp]) => lines.push(`　${SPELLS[sp].name}を おぼえた！`));
+    }
+  });
+  syncHeroesToSave();
+  if (B.isBoss) G.phase = "bossCleared";
+  saveGame();
+  $("res-head").textContent = B.isBoss ? "ボスを たおした！" : "たたかいに かった！";
+  $("res-body").innerHTML = lines.map(l => l.startsWith("★") ? `<span class="lvup">${l}</span>` : l).join("<br>");
+  showScreen("result");
+  $("btn-res-ok").onclick = () => {
+    if (B.isBoss) afterBoss(); else goHub();
+  };
+}
+function lose() {
+  B.mode = "busy"; renderCommands();
+  const lost = Math.floor(G.gold / 2); G.gold -= lost;
+  G.party.forEach(id => { const m = maxStats(id, G.heroes[id].lv); G.heroes[id].hp = Math.max(1, Math.round(m.hp * 0.5)); G.heroes[id].mp = m.mp; });
+  saveGame();
+  $("res-head").textContent = "ぜんめつ して しまった…";
+  $("res-body").textContent = `きがつくと、${B.chapter.town}の やどやで ねかされていた。\nおかねを ${lost} G おとしてしまったようだ。\nレベルは そのまま。もういちど きたえて いどもう！`;
+  showScreen("result");
+  $("btn-res-ok").onclick = goHub;
+}
+function afterBoss() {
+  const c = CHAPTERS[G.chapter];
+  const next = () => {
+    G.chapter++;
+    if (G.chapter >= CHAPTERS.length) { $("ending-text").textContent = ENDING_TEXT; localStorage.removeItem(SAVE_KEY); showScreen("ending"); return; }
+    G.phase = "intro"; saveGame(); startChapter();
+  };
+  if (c.afterBoss.length) playStory(c.afterBoss, next); else next();
+}
+
+/* ========================================================================
+   バトル：描画
+   ======================================================================== */
+function renderBattle() {
+  // ステータス
+  const strip = $("status-strip");
+  strip.innerHTML = B.heroes.map(h => `<div class="st ${B.sel === h ? "sel" : ""} ${h.acted ? "done" : ""} ${h.hp <= 0 ? "dead" : ""}" data-id="${h.id}">
+      <div class="nm">${h.emoji}${h.name}</div><div>HP ${h.hp}/${h.maxHp}</div><div class="bar hp"><i style="width:${100 * h.hp / h.maxHp}%"></i></div>
+      <div>MP ${h.mp}/${h.maxMp}</div><div class="bar mp"><i style="width:${100 * h.mp / h.maxMp}%"></i></div></div>`).join("");
+  strip.querySelectorAll(".st").forEach(el => el.onclick = () => {
+    if (B.mode === "busy") return;
+    const h = B.heroes.find(u => u.id === el.dataset.id);
+    if (h && h.hp > 0 && !h.acted) selectHero(h);
+  });
+  // グリッド
+  const grid = $("grid");
+  if (!grid.children.length) {
+    for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) {
+      const c = document.createElement("div"); c.className = "cell"; c.dataset.x = x; c.dataset.y = y;
+      c.addEventListener("click", () => onCellClick(x, y));
+      grid.appendChild(c);
+    }
+  }
+  const targets = currentTargets();
+  for (const cell of grid.children) {
+    const x = +cell.dataset.x, y = +cell.dataset.y;
+    cell.className = "cell";
+    const u = unitAt(x, y);
+    const pop = cell.querySelector(".pop");
+    cell.innerHTML = u ? `<div class="unit ${u.kind} ${u.guard ? "guard" : ""}" data-key="${u.kind}-${u.name}">${u.emoji}</div>
+      <div class="mini-hp ${u.kind === "hero" ? "ally" : ""}"><i style="width:${100 * u.hp / u.maxHp}%"></i></div>` : "";
+    if (pop) cell.appendChild(pop);
+    if (B.sel && B.sel.x === x && B.sel.y === y) cell.classList.add("active");
+    if (B.mode === "idle" && B.sel && !B.sel.moved && B.moveCells.some(c => c.x === x && c.y === y && c.d > 0)) cell.classList.add("move");
+    if (targets.some(t => t.x === x && t.y === y)) cell.classList.add(B.targetKind === "ally" ? "ally-target" : "target");
+  }
+}
+function currentTargets() {
+  if (!B.sel) return [];
+  if (B.mode === "attack") return B.enemies.filter(e => e.hp > 0 && dist(e, B.sel) <= B.sel.range);
+  if (B.mode === "spell") { const S = SPELLS[B.pending]; return B.enemies.filter(e => e.hp > 0 && dist(e, B.sel) <= S.range); }
+  if (B.mode === "spell-ally") return B.heroes.filter(h => h.hp > 0);
+  if (B.mode === "item-ally") return B.heroes.filter(h => B.pending === "feather" ? h.hp <= 0 : h.hp > 0);
+  return [];
+}
+function onCellClick(x, y) {
+  if (!B || B.mode === "busy" || !B.sel) return;
+  const u = unitAt(x, y);
+  if (B.mode === "idle") {
+    if (!B.sel.moved && B.moveCells.some(c => c.x === x && c.y === y && c.d > 0)) doMove(x, y);
+    else if (u && u.kind === "hero" && !u.acted && u !== B.sel) selectHero(u);
+    return;
+  }
+  if (B.mode === "attack" && u && u.kind === "enemy" && dist(u, B.sel) <= B.sel.range) doAttack(u);
+  else if (B.mode === "spell" && u && u.kind === "enemy" && dist(u, B.sel) <= SPELLS[B.pending].range) doSpell(B.pending, u);
+  else if (B.mode === "spell-ally" && u && u.kind === "hero") doSpell(B.pending, u);
+  else if (B.mode === "item-ally") {
+    const t = B.heroes.find(h => h.x === x && h.y === y && (B.pending === "feather" ? h.hp <= 0 : h.hp > 0));
+    if (t) doItem(B.pending, t);
+  }
+}
+function renderCommands() {
+  const area = $("cmd-area"); const h = B.sel;
+  if (B.mode === "busy" || !h) { area.innerHTML = ""; return; }
+  const back = `<button class="btn small" data-act="back">← もどる</button>`;
+  if (B.mode === "idle") {
+    const canAtk = B.enemies.some(e => e.hp > 0 && dist(e, h) <= h.range);
+    area.innerHTML = `<div class="cmd">
+      <button class="btn" data-act="attack" ${canAtk ? "" : "disabled"}>⚔ こうげき</button>
+      <button class="btn" data-act="spell" ${h.spells.length ? "" : "disabled"}>✨ とくぎ</button>
+      <button class="btn" data-act="item">🧺 どうぐ</button>
+      <button class="btn" data-act="guard">🛡 ぼうぎょ</button>
+      <button class="btn" data-act="wait">💤 まつ</button>
+      <button class="btn" data-act="flee" ${B.isBoss ? "disabled" : ""}>🏃 にげる</button>
+    </div>${h.range > 1 ? `<div class="note">${h.name}は ${h.range}マス さきまで とどく</div>` : ""}`;
+  } else if (B.mode === "attack") {
+    area.innerHTML = `<div class="note">あかい マスの てきを えらんでね</div>${back}`;
+  } else if (B.mode === "spell-menu") {
+    area.innerHTML = `<div class="sub-list">` + h.spells.map(id => {
+      const S = SPELLS[id]; const ok = h.mp >= S.cost && (S.kind !== "dmg" || B.enemies.some(e => e.hp > 0 && (S.self ? dist(e, h) <= S.aoe : dist(e, h) <= S.range)));
+      return `<button class="btn" data-spell="${id}" ${ok ? "" : "disabled"}><span>${S.name}<br><small>${S.desc}</small></span><span>MP${S.cost}</span></button>`;
+    }).join("") + `</div>${back}`;
+  } else if (B.mode === "spell") {
+    area.innerHTML = `<div class="note">${SPELLS[B.pending].name}：ねらう てきを えらんでね</div>${back}`;
+  } else if (B.mode === "spell-ally") {
+    area.innerHTML = `<div class="note">${SPELLS[B.pending].name}：なかまを えらんでね</div>${back}`;
+  } else if (B.mode === "item-menu") {
+    const list = Object.keys(ITEMS).filter(k => (G.items[k] || 0) > 0);
+    area.innerHTML = (list.length ? `<div class="sub-list">` + list.map(k => `<button class="btn" data-item="${k}"><span>${ITEMS[k].emoji} ${ITEMS[k].name}<br><small>${ITEMS[k].desc}</small></span><span>×${G.items[k]}</span></button>`).join("") + `</div>` : `<div class="note">どうぐを もっていない</div>`) + back;
+  } else if (B.mode === "item-ally") {
+    area.innerHTML = `<div class="note">${ITEMS[B.pending].name}：つかう なかまを えらんでね</div>${back}`;
+  }
+  area.querySelectorAll("[data-act]").forEach(b => b.onclick = () => {
+    const a = b.dataset.act;
+    if (a === "back") { B.mode = "idle"; }
+    else if (a === "attack") B.mode = "attack";
+    else if (a === "spell") B.mode = "spell-menu";
+    else if (a === "item") B.mode = "item-menu";
+    else if (a === "guard") { doGuard(); return; }
+    else if (a === "wait") { doWait(); return; }
+    else if (a === "flee") { doFlee(); return; }
+    renderBattle(); renderCommands();
+  });
+  area.querySelectorAll("[data-spell]").forEach(b => b.onclick = () => {
+    const id = b.dataset.spell, S = SPELLS[id]; B.pending = id;
+    if (S.kind === "dmg" && S.self) { doSpell(id, null); return; }
+    if (S.kind === "healall" || S.kind === "guardall") { doSpell(id, null); return; }
+    B.mode = S.kind === "heal" ? "spell-ally" : "spell"; B.targetKind = S.kind === "heal" ? "ally" : "enemy";
+    renderBattle(); renderCommands();
+  });
+  area.querySelectorAll("[data-item]").forEach(b => b.onclick = () => {
+    B.pending = b.dataset.item; B.mode = "item-ally"; B.targetKind = "ally"; renderBattle(); renderCommands();
+  });
+}
+function cellOf(u) { return $("grid").children[u.y * GW + u.x]; }
+function popDamage(u, v, cls) {
+  const cell = cellOf(u); if (!cell) return;
+  const p = document.createElement("div"); p.className = "pop " + (cls || ""); p.textContent = cls === "heal" ? "+" + v : v;
+  cell.appendChild(p); setTimeout(() => p.remove(), 900);
+}
+function shakeUnit(u) { const cell = cellOf(u); const el = cell && cell.querySelector(".unit"); if (el) { el.classList.add("hit"); setTimeout(() => el.classList.remove("hit"), 400); } }
+
+/* ---- 起動 ---- */
+initTitle();
+</script>
+</body>
+</html>
