@@ -159,6 +159,29 @@
   .result-box { text-align: center; padding: 10px; }
   .result-box .big { font-size: 26px; font-weight: bold; color: var(--accent); margin: 6px 0; }
   .lvup { color: var(--good); font-weight: bold; }
+  /* ---- フィールド ---- */
+  .field-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+  .field-head .btn { margin: 0; white-space: nowrap; }
+  .field-wrap { position: relative; border: 3px solid var(--frame); border-radius: 14px; overflow: hidden; background: #6aa84f; margin-bottom: 10px; }
+  .field { display: grid; grid-template-columns: repeat(9, 1fr); }
+  .tile { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 24px; line-height: 1; position: relative; }
+  .tile.grass { background: #8fcf6a; } .tile.grass2 { background: #86c662; }
+  .tile.path { background: #e2c58a; } .tile.tree { background: #4f9a3f; } .tile.water { background: #6db3e8; }
+  .tile.mount { background: #a08c7a; } .tile.town { background: #e2c58a; } .tile.gate { background: #7c5a8e; }
+  .tile.snow { background: #eef6fa; } .tile.snow2 { background: #e2eef5; } .tile.ice { background: #bfe3f2; } .tile.pine { background: #5f8c7a; }
+  .tile.dark { background: #5d5470; } .tile.dark2 { background: #554c68; } .tile.dpath { background: #8a7f9a; } .tile.wall { background: #3a3246; } .tile.lava { background: #e8734a; }
+  .tile.chest { background: inherit; }
+  .tile .pl { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 26px; filter: drop-shadow(0 2px 1px rgba(0,0,0,.35)); transition: transform .1s; }
+  .tile .pl.flip { transform: scaleX(-1); }
+  .field-toast { position: absolute; left: 10px; right: 10px; bottom: 10px; background: rgba(255,250,240,.95); border: 2px solid var(--frame); border-radius: 10px; padding: 8px 10px; font-size: 13px; white-space: pre-wrap; }
+  .field-foot { display: flex; gap: 12px; align-items: center; }
+  .dpad { display: grid; grid-template-columns: repeat(3, 46px); grid-template-rows: repeat(3, 46px); gap: 4px; }
+  .dpad .dp { border: 2px solid var(--frame); border-radius: 10px; background: #fffaf0; font-size: 18px; color: var(--ink); cursor: pointer; box-shadow: 0 2px 0 #c89a6a; font-family: inherit; }
+  .dpad .dp:active { transform: translateY(2px); box-shadow: none; }
+  .dpad .dp[data-dir="0,-1"] { grid-column: 2; grid-row: 1; } .dpad .dp[data-dir="-1,0"] { grid-column: 1; grid-row: 2; }
+  .dpad .dp.mid { grid-column: 2; grid-row: 2; background: var(--accent); color: #fff; border-color: #a9431d; box-shadow: 0 2px 0 #a9431d; }
+  .dpad .dp[data-dir="1,0"] { grid-column: 3; grid-row: 2; } .dpad .dp[data-dir="0,1"] { grid-column: 2; grid-row: 3; }
+  .field-info { flex: 1; font-size: 13px; }
   .hidden { display: none !important; }
   .fade { animation: fadein .35s; }
   @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
@@ -201,21 +224,37 @@
     </div>
   </section>
 
-  <!-- ハブ -->
-  <section class="screen" id="scr-hub">
-    <div class="panel">
-      <h2 id="hub-title"></h2>
-      <div id="hub-desc" style="font-size:13px"></div>
-      <div style="font-size:13px;margin-top:4px">おかね：<span class="gold" id="hub-gold"></span> G</div>
+  <!-- フィールド -->
+  <section class="screen" id="scr-field">
+    <div class="field-head">
+      <div><b id="field-title"></b><div class="note" style="text-align:left;margin:0" id="field-hint"></div></div>
+      <button class="btn small inline" id="btn-menu">☰ メニュー</button>
     </div>
-    <div class="panel">
-      <h2>なかま</h2>
-      <div class="party-list" id="hub-party"></div>
+    <div class="field-wrap" id="field-wrap"><div class="field" id="field"></div><div class="field-toast hidden" id="field-toast"></div></div>
+    <div class="field-foot">
+      <div class="dpad">
+        <button class="dp" data-dir="0,-1" aria-label="上">▲</button>
+        <button class="dp" data-dir="-1,0" aria-label="左">◀</button>
+        <button class="dp mid" id="dp-act">●</button>
+        <button class="dp" data-dir="1,0" aria-label="右">▶</button>
+        <button class="dp" data-dir="0,1" aria-label="下">▼</button>
+      </div>
+      <div class="field-info">
+        <div>おかね <span class="gold" id="field-gold"></span> G</div>
+        <div id="field-party"></div>
+        <div class="note" style="text-align:left;margin:4px 0 0">矢印キー／スワイプでも うごけます</div>
+      </div>
     </div>
-    <button class="btn" id="btn-town">🏘 まちへ いく <small style="font-weight:normal">（やどや・どうぐや・セーブ）</small></button>
-    <button class="btn" id="btn-train">🌲 <span id="train-label"></span> <small style="font-weight:normal">（モンスターと たたかう）</small></button>
-    <button class="btn primary" id="btn-boss">⚔ <span id="boss-label"></span></button>
-    <button class="btn small" id="btn-title" style="margin-top:16px">タイトルに もどる</button>
+    <div class="overlay hidden" id="menu-overlay">
+      <div class="panel">
+        <h2>なかま</h2>
+        <div class="party-list" id="hub-party"></div>
+        <h2 style="margin-top:12px">どうぐ</h2>
+        <div id="menu-items"></div>
+        <button class="btn small" id="btn-menu-close" style="margin-top:10px">とじる</button>
+        <button class="btn small" id="btn-title">タイトルに もどる</button>
+      </div>
+    </div>
   </section>
 
   <!-- 町 -->
@@ -398,6 +437,66 @@ const CHAPTERS = [
   }
 ];
 
+/* フィールドマップ（20×14）
+   . , = ground / ground2 / path　# = 木など(通れない)　~ = 水など(通れない)　M = 山(通れない)
+   S = スタート　T = 町　B = ボスの入口　C = 宝箱 */
+const MAPS = [
+  { theme: { ground: "grass", ground2: "grass2", path: "path", block: "tree", blockEmoji: "🌳", liquid: "water", liquidEmoji: "", mount: "mount", mountEmoji: "⛰", deco: "🌼", gateEmoji: "🍄" },
+    chests: [{ item: "herb", n: 2 }, { gold: 40 }],
+    rows: [
+      "####################",
+      "#..,..##....,....C.#",
+      "#.S==T=....#..,..#.#",
+      "#..,.#=....#.....#.#",
+      "#....#==..,###,.##.#",
+      "#~~~...==.........,#",
+      "#~~~~...==..~~~....#",
+      "#..~~....==.~~~~...#",
+      "#...~~....==.~~....#",
+      "#,...~.....==......#",
+      "#.....,....,==.,.#.#",
+      "#..C....##...==..#.#",
+      "#.......##....==B#.#",
+      "####################"
+    ] },
+  { theme: { ground: "snow", ground2: "snow2", path: "path", block: "pine", blockEmoji: "🌲", liquid: "ice", liquidEmoji: "", mount: "mount", mountEmoji: "🏔", deco: "❄️", gateEmoji: "🏯" },
+    chests: [{ item: "drop", n: 2 }, { item: "herb", n: 3 }, { gold: 80 }],
+    rows: [
+      "####################",
+      "#S=....M.....,...C.#",
+      "#.=T...MM..~~~.....#",
+      "#.==...MM..~~~..MM.#",
+      "#..=....M.......MM.#",
+      "#..==...........M..#",
+      "#...==,...##.......#",
+      "#....==...C#...~~~.#",
+      "#.....=....#...~~~.#",
+      "#MM...==...#.......#",
+      "#MMM...==..##..MM..#",
+      "#.......==.....MM..#",
+      "#.C......======B...#",
+      "####################"
+    ] },
+  { theme: { ground: "dark", ground2: "dark2", path: "dpath", block: "wall", blockEmoji: "🕯", liquid: "lava", liquidEmoji: "", mount: "wall", mountEmoji: "🗿", deco: "💀", gateEmoji: "🏰" },
+    chests: [{ gold: 150 }, { item: "drop", n: 2 }, { item: "feather", n: 1 }],
+    rows: [
+      "####################",
+      "#..~~......#.......#",
+      "#S.~~..M...#.....C.#",
+      "#=T....M...#.......#",
+      "#=.....M...####.####",
+      "#=.........#.......#",
+      "#==......C.#..~~~..#",
+      "#.=........#..~~~..#",
+      "#.==.......#.......#",
+      "#..=....####..M....#",
+      "#..=.........MMM...#",
+      "#.C=..~~.....MBM...#",
+      "#..=====~~.==.=....#",
+      "####################"
+    ] }
+];
+
 const ENDING_TEXT =
 `からくり大王ゾロは「おぼえてろー！」と さけびながら、ぽんこつの ひこうせんで にげていった。
 
@@ -462,7 +561,7 @@ $("btn-new").addEventListener("click", () => {
   if (loadGame() && !confirm("いまの きろくを けして、はじめから あそびますか？")) return;
   newGame(); startChapter();
 });
-$("btn-continue").addEventListener("click", () => { G = loadGame(); if (!G) return; if (G.phase === "intro") startChapter(); else goHub(); });
+$("btn-continue").addEventListener("click", () => { G = loadGame(); if (!G) return; if (G.phase === "intro") startChapter(); else goField(); });
 $("btn-title").addEventListener("click", () => { saveGame(); initTitle(); });
 $("btn-ending-title").addEventListener("click", initTitle);
 
@@ -476,7 +575,7 @@ function startChapter() {
   $("btn-chapter-go").onclick = () => playStory(c.intro, () => {
     if (G.chapter === 0 && !G.party.includes("momo")) addHero("momo", 1);
     if (G.chapter === 1 && !G.party.includes("ruu")) addHero("ruu", Math.max(4, G.heroes.piko.lv - 1));
-    G.phase = "hub"; saveGame(); goHub();
+    G.phase = "hub"; saveGame(); goField();
   });
 }
 
@@ -503,31 +602,144 @@ function playStory(lines, done) {
 }
 
 /* ========================================================================
-   ハブ
+   フィールド
    ======================================================================== */
-function goHub() {
+const VW = 9, VH = 7;
+let F = null; // { map, w, h, busy, steps }
+function tileAt(x, y) { const r = F.map.rows[y]; return r ? (r[x] || "#") : "#"; }
+function isBlocked(ch) { return ch === "#" || ch === "~" || ch === "M"; }
+function findTile(ch) {
+  for (let y = 0; y < F.h; y++) for (let x = 0; x < F.w; x++) if (tileAt(x, y) === ch) return { x, y };
+  return { x: 1, y: 1 };
+}
+const findStart = () => findTile("S");
+function chestIndex(x, y) {
+  let i = 0;
+  for (let yy = 0; yy < F.h; yy++) for (let xx = 0; xx < F.w; xx++) if (tileAt(xx, yy) === "C") { if (xx === x && yy === y) return i; i++; }
+  return -1;
+}
+function goField() {
   const c = CHAPTERS[G.chapter];
-  $("hub-title").textContent = `${c.label}「${c.title}」`;
-  $("hub-desc").textContent = `${c.town}の ちかくに いる。${c.field}で しゅぎょうしてから、${c.bossLabel.replace(/に いどむ|へ|に のりこむ/, "")}の ボスに いどもう。（めやす Lv${c.bossLv}）`;
-  $("hub-gold").textContent = G.gold;
-  $("train-label").textContent = `${c.field}で しゅぎょう`;
-  $("boss-label").textContent = c.bossLabel;
+  F = { map: MAPS[G.chapter], busy: false, steps: 0 };
+  F.w = F.map.rows[0].length; F.h = F.map.rows.length;
+  if (!G.pos || G.pos.ch !== G.chapter) { const s = findStart(); G.pos = { ch: G.chapter, x: s.x, y: s.y, face: 1 }; }
+  if (!G.chests) G.chests = {};
+  $("field-title").textContent = `${c.label}「${c.title}」`;
+  $("field-hint").textContent = `🏘${c.town}で きゅうけい、${F.map.theme.gateEmoji}が ボスの いりぐち（めやす Lv${c.bossLv}）`;
+  $("menu-overlay").classList.add("hidden");
+  hideToast();
+  showScreen("field");
+  renderField();
+}
+function renderField() {
+  const c = CHAPTERS[G.chapter], th = F.map.theme;
+  const ox = clamp(G.pos.x - Math.floor(VW / 2), 0, F.w - VW), oy = clamp(G.pos.y - Math.floor(VH / 2), 0, F.h - VH);
+  const field = $("field");
+  if (field.children.length !== VW * VH) { field.innerHTML = ""; for (let i = 0; i < VW * VH; i++) { const d = document.createElement("div"); d.className = "tile"; field.appendChild(d); } }
+  const opened = G.chests[G.chapter] || {};
+  for (let vy = 0; vy < VH; vy++) for (let vx = 0; vx < VW; vx++) {
+    const x = ox + vx, y = oy + vy, ch = tileAt(x, y), el = field.children[vy * VW + vx];
+    let cls = th.ground, txt = "";
+    if (ch === ",") { cls = th.ground2; txt = ((x * 7 + y * 13) % 5 === 0) ? th.deco : ""; }
+    else if (ch === "=") cls = th.path;
+    else if (ch === "#") { cls = th.block; txt = th.blockEmoji; }
+    else if (ch === "~") { cls = th.liquid; txt = th.liquidEmoji; }
+    else if (ch === "M") { cls = th.mount; txt = th.mountEmoji; }
+    else if (ch === "T") { cls = "town"; txt = "🏘"; }
+    else if (ch === "B") { cls = "gate"; txt = th.gateEmoji; }
+    else if (ch === "C") { cls = th.ground; txt = opened[chestIndex(x, y)] ? "📭" : "📦"; }
+    else if (ch === "S") { cls = th.path; }
+    el.className = "tile " + cls; el.textContent = txt;
+    if (x === G.pos.x && y === G.pos.y) { const p = document.createElement("div"); p.className = "pl" + (G.pos.face < 0 ? " flip" : ""); p.textContent = "🤴"; el.appendChild(p); }
+  }
+  $("field-gold").textContent = G.gold;
+  $("field-party").innerHTML = G.party.map(id => { const h = G.heroes[id], m = maxStats(id, h.lv); return `<div>${HERO_DEFS[id].emoji} Lv${h.lv} <span style="color:${h.hp <= 0 ? "var(--bad)" : h.hp / m.hp < 0.35 ? "#c47a16" : "inherit"}">HP${h.hp}/${m.hp}</span> MP${h.mp}/${m.mp}</div>`; }).join("");
+}
+let toastTimer = null;
+function toast(t, ms) { const el = $("field-toast"); el.textContent = t; el.classList.remove("hidden"); clearTimeout(toastTimer); if (ms !== 0) toastTimer = setTimeout(hideToast, ms || 1800); }
+function hideToast() { $("field-toast").classList.add("hidden"); }
+
+async function tryMove(dx, dy) {
+  if (!F || F.busy || !$("scr-field").classList.contains("active") || !$("menu-overlay").classList.contains("hidden")) return;
+  if (dx !== 0) G.pos.face = dx;
+  const nx = G.pos.x + dx, ny = G.pos.y + dy, ch = tileAt(nx, ny);
+  if (isBlocked(ch)) { renderField(); return; }
+  G.pos.x = nx; G.pos.y = ny; F.steps++;
+  renderField();
+  const c = CHAPTERS[G.chapter];
+  if (ch === "T") { saveGame(); goTown(); return; }
+  if (ch === "B") { F.busy = true; enterGate(); return; }
+  if (ch === "C") { openChest(nx, ny); return; }
+  // ランダムエンカウント
+  const rate = ch === "=" ? 0.03 : 0.13;
+  if (F.steps > 3 && rnd() < rate) {
+    F.busy = true; toast("モンスターが あらわれた！", 0);
+    await sleep(500); F.steps = 0; startBattle(false);
+  }
+}
+function openChest(x, y) {
+  const idx = chestIndex(x, y); const opened = G.chests[G.chapter] = G.chests[G.chapter] || {};
+  if (opened[idx]) return;
+  opened[idx] = true;
+  const ct = F.map.chests[idx] || { gold: 20 };
+  if (ct.gold) { G.gold += ct.gold; toast(`たからばこを あけた！ ${ct.gold} G を てにいれた！`, 2200); }
+  else { G.items[ct.item] = (G.items[ct.item] || 0) + ct.n; toast(`たからばこを あけた！ ${ITEMS[ct.item].name}を ${ct.n}こ てにいれた！`, 2200); }
+  saveGame(); renderField();
+}
+function enterGate() {
+  const c = CHAPTERS[G.chapter];
+  F.busy = false;
+  if (!confirm(`${c.bossLabel}？（ボスの めやす Lv${c.bossLv}）`)) return;
+  playStory(c.beforeBoss, () => startBattle(true));
+}
+document.querySelectorAll(".dpad .dp[data-dir]").forEach(b => b.addEventListener("click", () => { const [dx, dy] = b.dataset.dir.split(",").map(Number); tryMove(dx, dy); }));
+$("dp-act").addEventListener("click", () => {
+  if (!F) return; const ch = tileAt(G.pos.x, G.pos.y);
+  if (ch === "T") goTown(); else if (ch === "B") enterGate(); else toast("ここには なにも ない。", 1200);
+});
+document.addEventListener("keydown", e => {
+  const k = e.key.toLowerCase();
+  const map = { arrowup: [0, -1], w: [0, -1], arrowdown: [0, 1], s: [0, 1], arrowleft: [-1, 0], a: [-1, 0], arrowright: [1, 0], d: [1, 0] };
+  if (map[k]) { e.preventDefault(); tryMove(...map[k]); }
+});
+(() => { // スワイプ
+  let sx = 0, sy = 0; const w = $("field-wrap");
+  w.addEventListener("touchstart", e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+  w.addEventListener("touchend", e => {
+    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) < 24 && Math.abs(dy) < 24) return;
+    if (Math.abs(dx) > Math.abs(dy)) tryMove(Math.sign(dx), 0); else tryMove(0, Math.sign(dy));
+  }, { passive: true });
+})();
+
+/* ---- メニュー ---- */
+function openMenu() {
   $("hub-party").innerHTML = G.party.map(id => {
     const h = G.heroes[id], d = HERO_DEFS[id], m = maxStats(id, h.lv);
     return `<div class="pc"><div class="nm">${d.emoji} ${d.name} <small>Lv${h.lv}</small></div>
       <div>HP ${h.hp}/${m.hp}</div><div class="bar hp"><i style="width:${100 * h.hp / m.hp}%"></i></div>
       <div>MP ${h.mp}/${m.mp}</div><div class="bar mp"><i style="width:${100 * h.mp / m.mp}%"></i></div>
       <div>EXP ${h.exp}/${expNeed(h.lv)}</div><div class="bar exp"><i style="width:${100 * h.exp / expNeed(h.lv)}%"></i></div>
-      <div style="color:var(--ink-soft)">こうげき ${m.atk}　ぼうぎょ ${m.def}</div></div>`;
+      <div style="color:var(--ink-soft)">こうげき ${m.atk}　ぼうぎょ ${m.def}</div>
+      <div style="color:var(--ink-soft)">${knownSpells(id, h.lv).map(s => SPELLS[s].name).join("・")}</div></div>`;
   }).join("");
-  showScreen("hub");
+  const list = Object.keys(ITEMS).filter(k => (G.items[k] || 0) > 0);
+  $("menu-items").innerHTML = list.length ? list.map(k => `<div class="shop-item"><span style="font-size:22px">${ITEMS[k].emoji}</span><div class="d">${ITEMS[k].name} ×${G.items[k]}<small>${ITEMS[k].desc}</small></div>
+      <select data-use="${k}" class="btn small inline" style="padding:6px"><option value="">つかう…</option>${G.party.map(id => `<option value="${id}">${HERO_DEFS[id].name}</option>`).join("")}</select></div>`).join("")
+    : `<div class="note">どうぐを もっていない</div>`;
+  $("menu-items").querySelectorAll("[data-use]").forEach(sel => sel.onchange = () => {
+    const id = sel.value, k = sel.dataset.use; if (!id) return;
+    const h = G.heroes[id], m = maxStats(id, h.lv);
+    if (k === "feather") { if (h.hp > 0) { alert(`${HERO_DEFS[id].name}は たおれていない。`); sel.value = ""; return; } h.hp = Math.round(m.hp / 2); }
+    else if (h.hp <= 0) { alert(`${HERO_DEFS[id].name}は たおれている。ふっかつのはねを つかおう。`); sel.value = ""; return; }
+    else if (k === "herb") h.hp = Math.min(m.hp, h.hp + Math.round(m.hp / 2));
+    else if (k === "drop") h.mp = Math.min(m.mp, h.mp + Math.round(m.mp / 2));
+    G.items[k]--; saveGame(); openMenu(); renderField();
+  });
+  $("menu-overlay").classList.remove("hidden");
 }
-$("btn-town").addEventListener("click", goTown);
-$("btn-train").addEventListener("click", () => startBattle(false));
-$("btn-boss").addEventListener("click", () => {
-  const c = CHAPTERS[G.chapter];
-  playStory(c.beforeBoss, () => startBattle(true));
-});
+$("btn-menu").addEventListener("click", openMenu);
+$("btn-menu-close").addEventListener("click", () => $("menu-overlay").classList.add("hidden"));
 
 /* ---- 町 ---- */
 function goTown() {
@@ -551,7 +763,7 @@ $("btn-inn").addEventListener("click", () => {
   saveGame(); goTown(); $("save-done").textContent = "ぐっすり ねむって、みんな げんきに なった！";
 });
 $("btn-save").addEventListener("click", () => { saveGame(); $("save-done").textContent = "きろくを つけた！"; });
-$("btn-town-back").addEventListener("click", goHub);
+$("btn-town-back").addEventListener("click", goField);
 
 /* ========================================================================
    バトル：エンジン
@@ -752,7 +964,7 @@ function doGuard() { const h = B.sel; h.guard = true; setMsg(`${h.name}は み�
 function doWait() { setMsg(`${B.sel.name}は ようすを 見ている。`); finishAction(); }
 async function doFlee() {
   B.mode = "busy"; renderCommands();
-  if (rnd() < 0.7) { setMsg("うまく にげだした！"); await sleep(600); syncHeroesToSave(); saveGame(); goHub(); }
+  if (rnd() < 0.7) { setMsg("うまく にげだした！"); await sleep(600); syncHeroesToSave(); saveGame(); goField(); }
   else { setMsg("にげられなかった！"); await sleep(600); B.heroes.forEach(h => h.acted = true); endPlayerPhase(); }
 }
 
@@ -785,18 +997,19 @@ function win() {
   $("res-body").innerHTML = lines.map(l => l.startsWith("★") ? `<span class="lvup">${l}</span>` : l).join("<br>");
   showScreen("result");
   $("btn-res-ok").onclick = () => {
-    if (B.isBoss) afterBoss(); else goHub();
+    if (B.isBoss) afterBoss(); else goField();
   };
 }
 function lose() {
   B.mode = "busy"; renderCommands();
   const lost = Math.floor(G.gold / 2); G.gold -= lost;
   G.party.forEach(id => { const m = maxStats(id, G.heroes[id].lv); G.heroes[id].hp = Math.max(1, Math.round(m.hp * 0.5)); G.heroes[id].mp = m.mp; });
+  if (F) { const t = findTile("T"); G.pos = { ch: G.chapter, x: t.x, y: t.y, face: 1 }; }
   saveGame();
   $("res-head").textContent = "ぜんめつ して しまった…";
   $("res-body").textContent = `きがつくと、${B.chapter.town}の やどやで ねかされていた。\nおかねを ${lost} G おとしてしまったようだ。\nレベルは そのまま。もういちど きたえて いどもう！`;
   showScreen("result");
-  $("btn-res-ok").onclick = goHub;
+  $("btn-res-ok").onclick = goField;
 }
 function afterBoss() {
   const c = CHAPTERS[G.chapter];
