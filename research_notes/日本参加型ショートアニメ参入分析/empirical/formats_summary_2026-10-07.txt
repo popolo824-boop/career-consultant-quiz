@@ -1,0 +1,164 @@
+TOTAL dated 931
+
+== earliest 5 per format (date, views, channel, title)
+
+# other n= 177 views median 329620
+   2019/03/30 1765 animeniac _1 | #anime #amv #khornime
+AMV anime finger twiddle compilation
+   2021/01/07 730 ぬらりくらり | うっせぇわ友達に送ってやった‪w‪w
+   2021/09/20 30643 コムドット図鑑コムドット切り抜きch | 【友情崩壊】仲良い友達に送りたい動画www
+   2021/12/19 6365 いきぬき | 【TikTok】友達に送ってみてね、、、？【アニメ】#Shorts
+   2021/12/22 335232 あゆなき | 大好きな友達に送ろう！＃友情
+   2022/11/06 1368 きむきむ | 指遊びしてみた【閃光のハサウェイ】#音ハメ#shorts
+   TOP:
+   2026/01/07 29863753 カッキー創作チャンネル | リズムに合わせて単語を言ってみようチャレンジ♪ ゾンビボーカロイド編【#初音ミク #重音テト #ボーカロイド 】
+   2026/02/06 23903064 カッキー創作チャンネル | リズムに合わせて荷物検査する空港♪ミク編
+   2026/05/05 14572385 もやりつの手描きアニメ部屋【FanAnimation MOYARITSU】 | 脹相の目覚まし時計part２『#呪術廻戦#jujutsukaisen  』#animation #funny #shor
+   2026/04/24 9079137 もやりつの手描きアニメ部屋【FanAnimation MOYARITSU】 | 脹相「加茂憲倫が来た!!いや間違いか」『#呪術廻戦#jujutsukaisen 』#animation   #funny
+   2026/06/05 8563345 もやりつの手描きアニメ部屋【FanAnimation MOYARITSU】 | 脹相の目覚まし時計part4 avgn dance MEME『#呪術廻戦#jujutsukaisen  』#animat
+
+# left_right(右左どっち/2択) n= 170 views median 273725
+   2021/05/20 4461 いきぬき | 【女性向け】ヤンデレかデレデレどっちのほうが好き？【アニメ】#Shorts
+   2022/02/23 1635564 SION /紫音 | 右左どっち⁉️選んだアニメ技を強制的にする【呪術廻戦】
+   2022/08/09 583536 ゴウキブック | 【アニメ】右左どっち？洋服を選ぶ！ #shorts
+   2022/10/15 14026 ナカチコChannel | 日常組VSカラフルピーチ！　どっちが好き？【カラフルピーチ】
+   2022/10/26 3579066 SS manga diary-慎本 真- | 右？左？どっち？選んだ設定だけでイラスト描いてみたw8 #shorts #artwork #satisfying
+   2022/12/17 53444 ヤクザと目つきの悪い女刑事の話 - 『ヤク目』 | 究極の2択 あなたならどっちを選ぶ？　#shorts  #short #ヤク目 #ヤクザ #ショートアニメ #ネタ #お
+   TOP:
+   2023/05/22 37928095 全力回避フラグちゃん! / Flag Chan! | 右左どっち？ #右左どっち #shorts #Plottアニメ
+   2024/03/26 11644550 混血のカレコレ | 右左どっちでメイクする #Plottアニメ
+   2025/01/04 10634015 混血のカレコレ | 【究極の二択】どっちがいい？ #Plottアニメ
+   2023/07/31 7912837 全力回避フラグちゃん! / Flag Chan! | 右左どっち？2 #右左どっち #shorts #Plottアニメ
+   2024/11/10 7589136 混血のカレコレ | 右左どっち選んで料理する #Plottアニメ
+
+# finger_place(指を置いて/ここに指) n= 118 views median 4553
+   2021/10/16 158301 トキイチ | ここに指をおいてみて！！#shorts
+   2021/12/26に公開済み 1149 さやま まや【お絵描きVTuber】Sayama Maya | #shorts 【 指を置く アニメ】いつも頑張るあなたに贈るゆるアニメ【 自主制作アニメ お絵描き VTuber 】
+   2022/05/17 1684 KINAKO FAMILY | 指を置いてみてください #shorts
+   2022/07/19 889 雪☃️の部屋 | ここに指を置いてください
+   2022/08/15 1962799 ella.youtube | Put your finger here and HOLD! (lil’ animation) #shorts #ani
+   2023/01/02 8742 めい | 指を置いてね！失恋フラグver【失恋フラグ】＃失恋フラグ＃イラスト#小5
+   TOP:
+   2024/02/23 34906099 Zane Little | Put Finger Here #flipnote
+   2024/07/21 33296179 Nutshell Animations | PLACE FINGER HERE 😜 (Animation Meme) #shorts
+   2024/02/10 29542740 Nutshell Animations | PLACE FINGER HERE 😁 (Animation Meme) #shorts
+   2025/12/26 22354919 カッキー創作チャンネル | 指を置いて遊ぶアニメ♪ゾンビボーカロイド編【#亞北ネル #初音ミク #重音テト 】
+   2026/04/01 14938207 カッキー創作チャンネル | 指を置いて遊ぶアニメ♪ ソニックとレース編【#ソニック #テイルス #anime 】
+
+# tap_stop(ピッタリ止め/タップで止め) n= 87 views median 68347
+   2022/03/22 2982847 スプラクリップ | ピッタリ止めろ！ピッタリ止めると…【スプラトゥーン2】#Shorts
+   2022/06/03 506756 yuusuube | アーニャでピッタリ止めると…⁉🕵３回連続でピッタリ止めたら神✨#Shorts #スパイファミリー  #spyfamily
+   2022/06/09 2148929 混血のカレコレ | タップでぴったり止めると…？　#shorts
+   2022/06/11 624448 やむ | タップで止めると…❓#Shorts
+   2022/06/16 77969 yuusuube | 煉獄(れんごく)さんでピッタリ止めると…⁉👘🔥3回連続でピッタリ止めたら神✨#Shorts #鬼滅の刃/きめつのやいば 
+   2022/06/22 56874 yuusuube | ヨルフォージャーでピッタリ止めると…⁉💃💛３回連続でピッタリ止めたら神✨#Shorts #スパイファミリー  #spyf
+   TOP:
+   2026/04/26 3624131 私立パラの丸高校 | タイミングよくダブルタップしてね #パラ高
+   2022/03/22 2982847 スプラクリップ | ピッタリ止めろ！ピッタリ止めると…【スプラトゥーン2】#Shorts
+   2022/06/09 2148929 混血のカレコレ | タップでぴったり止めると…？　#shorts
+   2022/06/29 2044063 yuusuube | 甘露寺蜜璃(かんろじみつり)でピッタリ止めると…⁉🌸🗡連続でピッタリ止めたら神✨
+   2022/08/03 1975329 yuusuube | 【鬼滅の刃】🎀竈門禰豆子 (かまどねずこ)でピッタリ止めると…⁉✨連続で止めたら神✨
+
+# tap_other(タップ/連打/長押し/スワイプ) n= 36 views median 5901
+   2022/04/15 1676 仄幽_Honoka | 手をスワイプしてみて。#shorts
+   2022/07/22 86628 ブラックチャンネル | 【画面をタップ！】今日の運勢は？ #shorts
+   2022/11/19 1458 きむきむ | 画面2回タップで仮面外れるよ！！#Shorts
+   2024/02/11 17024 モンキーランド monkeyrand | 【花になって✖️ピグパ】あなたの力でぼくを「ニヒルに笑う花」にしてっ😱‼️バズり中の『薬屋のひとりごと』OP曲でタップゲ
+   2024/03/11 161197 しょう.iPhoneとガジェットで叶える便利な暮らし | 【知らなきゃ損】タップで変わる壁紙！
+   2024/03/14 6643 ぴゃぴ | 画面タップして揃えるスロットゲーム #ねこ #アニメ #アニメーション
+   TOP:
+   2025/12/10 2741922  | 【アニメ】タップするたびに成長したら… #ミリプロ #anime
+   2025/04/11 1527612 あくび・でもんすぺーど / Akubi Demonspade  | テレパシ、リズムよくタップすると異変が...!!
+   2025/01/30 1329053 あくび・でもんすぺーど / Akubi Demonspade  | 【最後が危険すぎる】モニタリング、画面を連打すると…？【#あくび・でもんすぺーど】
+   2025/07/26 482488 ワザくん🍎iPhone便利術 | 鬼滅好きは必見⁉️タップごとにシャッフルできる壁紙📲 #iphone便利機能 #anime #iphone
+   2024/03/11 161197 しょう.iPhoneとガジェットで叶える便利な暮らし | 【知らなきゃ損】タップで変わる壁紙！
+
+# hand_other(手を使って/かざして/なぞって) n= 10 views median 29018
+   2022/10/15 6762 ナカチコChannel | 【カラフルピーチ】手を動かして見てね　なおきり集
+   2022/10/17 24915 ナカチコChannel | 【カラフルピーチ】手を動かして見てね　のあ集
+   2022/10/22 12186 ナカチコChannel | 【カラフルピーチ】手を動かして見てね　じゃぱぱ集
+   2022/10/28 14846 ナカチコChannel | 【カラフルピーチ】手を動かして見てね　るな集
+   2022/10/31 9838 ナカチコChannel | 【呪術廻船】手を動かして見てね　乙骨集
+   2022/11/16 66342 ナカチコChannel | 【カレコレ屋】手を動かして見てね　カゲチヨ
+   TOP:
+   2025/08/18 3417704 全力回避フラグちゃん! / Flag Chan! | どんな手を使っても優先席を取る女の子 #Plottアニメ #フラグちゃん
+   2022/11/16 66342 ナカチコChannel | 【カレコレ屋】手を動かして見てね　カゲチヨ
+   2025/07/22 33159 とるとる | 指でなぞってみな #ホロライブ
+   2024/12/29 31923 きりなこ | 指でなぞってね！！#ポーランドボール #shorts
+   2025/07/12 29018 ドラゴンボール超•雑学 | 指でなぞってキャラクターを動かそう!! #ドラゴンボール #ドラゴンボールz #ドラゴンボール超 #ドラゴンボールgt 
+
+# thumb_dance(リズムに合わせて指) n= 297 views median 118300
+   2024/08/16 520 おきゅたんVR Ch.☆バーチャル勇気でやってみよ | ぐにぐに！VRで指を動かしちゃお
+   2025/07/27 78126 Seven | 円のリズムに合わせて指を動かそう#shorts
+   2025/08/07 66188 なと | 円のリズムに合わせて指を動かそう※ネタバレ注意
+   2025/08/16 9934740 zakkuri24 | THUMB DANCE CHALLENGE! GENSHIN🎵 #shorts #genshinimpact #hoyo
+   2025/08/22 29797724 杰克大魔王㊣ | THUMB DANCE CHALLENGE! Part 4 #funny  #JackAndSara #Interact
+   2025/08/24 7254429 なで肩 | THUMB DANCE CHALLENGE #shorts #僕のヒーローアカデミア #ヒロアカ #mha #myher
+   TOP:
+   2025/10/22 31454861 カッキー創作チャンネル | リズムに合わせて指を動かして遊ぶアニメ♪リンレン＆ミク編【#初音ミク #鏡音リン・レン #ボーカロイド 】
+   2025/08/22 29797724 杰克大魔王㊣ | THUMB DANCE CHALLENGE! Part 4 #funny  #JackAndSara #Interact
+   2025/10/03 28698901 カッキー創作チャンネル | リズムに合わせて指を動かして遊ぶアニメ♪ミクテト編【#初音ミク #重音テト #ボーカロイド 】
+   2025/11/03 27090803 杰克大魔王㊣ | THUMB DANCE CHALLENGE! Part 11 #funny  #JackAndSara #Interac
+   2025/10/29 26452205 カッキー創作チャンネル | リズムに合わせて指を動かして遊ぶアニメ♪ツーショット編【#初音ミク #鏡音リン・レン #ボーカロイド 】
+
+# close_eyes(目を閉じて) n= 25 views median 60429
+   2025/10/22 2793 fee_macaron | Close your eyes to the rhythm!👀🎵 !watch out angel! #illustra
+   2025/12/07 13270219 鷲羽アスカ / Washu Asuka | MIKU×Close your eyes to the rhythm！リズムに合わせて目を閉じてね。 #rhythmga
+   2025/12/08 3913498 SpaceBirbLizzy | Close your eyes to the Rhythm!
+   2025/12/08 671309 斎木こまり SaikiKomari | Close your eyes to the rhythm🎶リズムに合わせて瞬きすると？👀 #イラスト #rhythmg
+   2025/12/12 225675 空奏イト / Ito Channel【ミクスト】 | Close your eyes to the rhythm！リズムに合わせて目を閉じてね。#rhythmgame #il
+   2025/12/16 1682647 クロム | Close your eyes to the rhythm #ブルアカ #bluearchive
+   TOP:
+   2025/12/07 13270219 鷲羽アスカ / Washu Asuka | MIKU×Close your eyes to the rhythm！リズムに合わせて目を閉じてね。 #rhythmga
+   2025/12/08 3913498 SpaceBirbLizzy | Close your eyes to the Rhythm!
+   2025/12/16 1682647 クロム | Close your eyes to the rhythm #ブルアカ #bluearchive
+   2026/01/18 968462 なで肩 | Close your eyes to the rhythm #shorts #僕のヒーローアカデミア #ヒロアカ #mh
+   2025/12/18 902570 クロム | Close your eyes to the rhythm Part 2 #ブルアカ #bluearchive
+
+# pinch(指でつまんで/Auto Walk) n= 11 views median 750243
+   2026/01/01 2066794 もやりつの手描きアニメ部屋【FanAnimation MOYARITSU】 | 指でつまんでみてね！パート１『#呪術廻戦#jujutsukaisen  』(Auto Walk Mode ACTIVAT
+   2026/01/02 1206135 もやりつの手描きアニメ部屋【FanAnimation MOYARITSU】 | 指でつまんでみてね！パート2『#呪術廻戦#jujutsukaisen  』(Auto Walk Mode ACTIVAT
+   2026/01/04 1619525 もやりつの手描きアニメ部屋【FanAnimation MOYARITSU】 | 指でつまんでみてね！パート3『#呪術廻戦#jujutsukaisen  』(Auto Walk Mode ACTIVAT
+   2026/01/04 1788280 zakkuri24 | 指でつまんでみてね！ #原神 #genshinimpact #interactivegame #furina #huta
+   2026/01/09 7068528 もやりつの手描きアニメ部屋【FanAnimation MOYARITSU】 | 指でつまんでみてね！パート4『#呪術廻戦#jujutsukaisen  』(Auto Walk Mode ACTIVAT
+   2026/01/16 38038 アブチャンネル | 【鳴潮】指でつまんでみてね！
+   TOP:
+   2026/01/09 7068528 もやりつの手描きアニメ部屋【FanAnimation MOYARITSU】 | 指でつまんでみてね！パート4『#呪術廻戦#jujutsukaisen  』(Auto Walk Mode ACTIVAT
+   2026/01/01 2066794 もやりつの手描きアニメ部屋【FanAnimation MOYARITSU】 | 指でつまんでみてね！パート１『#呪術廻戦#jujutsukaisen  』(Auto Walk Mode ACTIVAT
+   2026/01/04 1788280 zakkuri24 | 指でつまんでみてね！ #原神 #genshinimpact #interactivegame #furina #huta
+   2026/01/04 1619525 もやりつの手描きアニメ部屋【FanAnimation MOYARITSU】 | 指でつまんでみてね！パート3『#呪術廻戦#jujutsukaisen  』(Auto Walk Mode ACTIVAT
+   2026/01/02 1206135 もやりつの手描きアニメ部屋【FanAnimation MOYARITSU】 | 指でつまんでみてね！パート2『#呪術廻戦#jujutsukaisen  』(Auto Walk Mode ACTIVAT
+
+== count by quarter (all dated participatory hits, excluding 'other')
+2021Q2 1 median views 4461
+2021Q4 2 median views 158301
+2022Q1 2 median views 2982847
+2022Q2 9 median views 506756
+2022Q3 21 median views 173870
+2022Q4 17 median views 53444
+2023Q1 16 median views 128801
+2023Q2 14 median views 54187
+2023Q3 7 median views 57162
+2023Q4 3 median views 25013
+2024Q1 22 median views 1609628
+2024Q2 10 median views 19015
+2024Q3 16 median views 338113
+2024Q4 13 median views 31923
+2025Q1 12 median views 568006
+2025Q2 25 median views 34221
+2025Q3 87 median views 137515
+2025Q4 190 median views 252130
+2026Q1 108 median views 62476
+2026Q2 61 median views 11130
+2026Q3 97 median views 11059
+2026Q4 21 median views 13134
+
+== per format by half-year
+left_right(右左どっち/2択) {'2021H1': 1, '2022H1': 1, '2022H2': 4, '2023H1': 7, '2023H2': 4, '2024H1': 17, '2024H2': 9, '2025H1': 16, '2025H2': 40, '2026H1': 34, '2026H2': 37}
+finger_place(指を置いて/ここに指) {'2021H2': 2, '2022H1': 1, '2022H2': 2, '2023H1': 5, '2023H2': 5, '2024H1': 10, '2024H2': 14, '2025H1': 14, '2025H2': 18, '2026H1': 21, '2026H2': 26}
+tap_stop(ピッタリ止め/タップで止め) {'2022H1': 8, '2022H2': 24, '2023H1': 18, '2023H2': 1, '2024H1': 1, '2025H1': 2, '2025H2': 16, '2026H1': 13, '2026H2': 4}
+tap_other(タップ/連打/長押し/スワイプ) {'2022H1': 1, '2022H2': 2, '2024H1': 4, '2024H2': 4, '2025H1': 5, '2025H2': 7, '2026H1': 10, '2026H2': 3}
+hand_other(手を使って/かざして/なぞって) {'2022H2': 6, '2024H2': 1, '2025H2': 3}
+thumb_dance(リズムに合わせて指) {'2024H2': 1, '2025H2': 181, '2026H1': 71, '2026H2': 44}
+close_eyes(目を閉じて) {'2025H2': 12, '2026H1': 9, '2026H2': 4}
+pinch(指でつまんで/Auto Walk) {'2026H1': 11}
